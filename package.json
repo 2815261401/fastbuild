@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:fastbuild.helloWorld"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -18,8 +18,25 @@
       {
         "command": "fastbuild.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "fastbuild.create",
+        "title": "(通过模板) 新建文件"
+      },
+      {
+        "command": "fastbuild.createConfigFile",
+        "title": "创建模板文件"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "fastbuild.create",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
