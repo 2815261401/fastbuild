@@ -14,7 +14,10 @@
 		"onCommand:fast-build.createConfigFile",
 		"onCommand:fast-build.create"
 	],
-	"repository": {},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jaluik/dot-log.git"
+	},
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
