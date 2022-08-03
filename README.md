@@ -1,70 +1,113 @@
-# fastbuild README
+# 通过模板配置快速创建文件
 
-This is the README for your extension "fastbuild". After writing up a brief description, we recommend including the following sections.
+这是一个 VSCode 插件,用来快速构建前端文件,目前将[Feather Template](https://marketplace.visualstudio.com/items?itemName=eayer.ftemplate)的功能整合了进来
 
-## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
-For example if there is an image subfolder under your extension project workspace:
+## 使用方法
 
-\!\[feature X\]\(images/feature-x.png\)
+创建模板目录内容,在没有配置文件(.ftemplate.js)的情况下,默认使用 fileTemplate 目录作为模板目录.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- 创建模板目录(fileTemplate)
 
-## Requirements
+  fileTemplate 目录应当位于根目录下.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- 创建模板文件
 
-## Extension Settings
+  (文件名,文件夹,文件内容)可以设定占位符,占位符的内容在创建的时候会被替代.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+- 新建文件
 
-For example:
+  右键文件夹 - (通过模板) 新建文件
 
-This extension contributes the following settings:
+> 空目录目前是无效的
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+## 系统提供的占位符
 
-## Known Issues
+名称
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- %Folder% : 文件夹的名字
+- %folder% : 文件夹的名字(全部小写)
+- %Module% : 模块的名字
+- %module% : 模块的名字(全部小写)
 
-## Release Notes
+时间
 
-Users appreciate release notes as you update your extension.
+- %timestamp%: 时间戳
+- %day% : 星期数
+- %year% : 年
+- %month% : 月
+- %date% : 日
+- %hour% : 小时
+- %minute% : 分
+- %second% : 秒
 
-### 1.0.0
+## 配置文件.ftemplate.js
 
-Initial release of ...
+可以通过命令( 创建模板文件 )快速创建配置文件.
 
-### 1.0.1
+支持以下高级功能
 
-Fixed issue #.
+- 支持多模板
+- 支持自定义占位符
+- 支持忽略配置
+- 是否强制覆盖
 
-### 1.1.0
+详细的配置详情如下
 
-Added features X, Y, and Z.
+```
+module.exports = {
+  // 模板列表,用于选择,只有一个时自动选择
+  templates: [
+    {
+      name: 'template', //模板名称
+      path: 'template', //模板相对于工作区目录路径， 支持绝对路径
+      exclude: 'txt$', // 排除模板文件中的内容，正则表达式
+    },
+  ],
+  // 占位符
+  /* context = {
+    folder: 当前选择的文件目录
+    workspaceFolder: 所在的工作区目录
+    template: 所选择模块信息
+    module: 模块名称
+  }
+  */
+  placeholder: [
+    [
+      'EXT',
+      (context) => {
+        return context.module + '.temp';
+      }, // [正则表达式, 返回函数]
+    ],
+  ],
+  // 是否强制覆盖(默认为false)
+  overwrite: false,
+  // 是否忽略系统占位符
+  ignoreDefaultPlaceholder: false,
+};
 
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
+```
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+模板配置列表支持对象配置，path 的子目录将自动解析为模板列表。实现快速设置。
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+```
+  templates: {
+    path: "templates",
+    // 过滤指定模板
+    filter: (dirname) => {
+      return true;
+    },
+    exclude: 'txt$', // 排除模板文件中的内容，正则表达式
+  },
+```
 
-## Working with Markdown
+## 注意事项
 
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+- 模板文件解析的时候使用的是 utf-8 编码，所以请保证编码一致。
+- 占位符可以迭代嵌套,占位符生成的新的占位符可以被后面的占位符进行替代
+- `%folder%`和 `%module%` , 以及 `%Folder%`和 `%Module%` 在不输入模块名称的情况下是等价的,所以会造成创建文件的时候冲突, 所以请尽量避免此类情况(虽然我们已经做过处理).
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
+## 最后
 
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+如果觉得插件好用，希望给个五星好评。

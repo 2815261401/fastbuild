@@ -12,7 +12,7 @@ export class createTemplate {
   config: any={};
   placeHolders: any[]=[];
   constructor(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('fastbuild.create',async (args) => {
+    let disposable = vscode.commands.registerCommand('fast-build.create',async (args) => {
       try {
           if (this.isUrl(args)) {
             const fsPath = args.fsPath;
@@ -165,7 +165,7 @@ export class createTemplate {
       } else {
         let templateFolder = path.resolve(
           this.workspaceFolderUri.fsPath,
-          'template'
+          'fileTemplate'
         );
         if (fs.existsSync(templateFolder)) {
           this.config.templates.push({

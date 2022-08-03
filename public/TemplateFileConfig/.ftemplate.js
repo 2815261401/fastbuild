@@ -3,8 +3,12 @@ module.exports = {
   // 模板列表,用于选择
   templates: [
     {
-      name: "template",
-      path: "template"
+      name: "fileTemplate",
+      path: "fileTemplate",
+      // 过滤指定模板
+      filter: (dirname) => {
+        return true
+      },
     }
   ],
   // 占位符
@@ -19,14 +23,23 @@ module.exports = {
   }
   */
   placeholder: [
-    [
-      "%(\\s*)author(\\s*)%", (env) => { return "作者" }  // [正则表达式, 返回函数]
-    ]
-  ],
+		[
+			'%name%',
+			(context) => {
+				return context.module === 'index'
+					? context.folder
+							.split('\\')
+							[context.folder.split('\\').length - 1].replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+					: context.module.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+			} // [正则表达式, 返回函数]
+		]
+	],
   // 模板忽略配置
   exclude: [
 
   ],
-  // 是否强制覆盖(默认为false)
-  overwrite: true,
+	// 是否强制覆盖,如果已经存在(默认为false)
+	overwrite: false,
+	// 是否忽略系统占位符
+	ignoreDefaultPlaceholder: false
 }
