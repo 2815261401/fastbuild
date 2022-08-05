@@ -1,5 +1,4 @@
 module.exports = {
-
   // 模板列表,用于选择
   templates: [
     {
@@ -38,7 +37,7 @@ module.exports = {
   exclude: [
 
   ],
-	// 是否强制覆盖,如果已经存在(默认为false)
+	// 如果已经存在,是否强制覆盖(默认为false)
 	overwrite: false,
 	// 是否忽略系统占位符
 	ignoreDefaultPlaceholder: false

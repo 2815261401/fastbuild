@@ -1,6 +1,7 @@
 import vscode = require('vscode');
 import fs = require('fs');
 import path = require('path');
+import { getAll } from './Api';
 
 export class createTemplateConfigFile {
 	constructor(context: vscode.ExtensionContext) {
@@ -9,6 +10,7 @@ export class createTemplateConfigFile {
 				'fast-build.createConfigFile',
 				async () => {
 					try {
+						// 获取工作区
 						const workspace_folder = await this.selectWorkspace();
 						if (workspace_folder) {
 							let workspace_configFileName =
@@ -17,6 +19,7 @@ export class createTemplateConfigFile {
 								workspace_configFileName
 							);
 							if (fs.existsSync(workspace_configFileName)) {
+								// 获取未创建的模板文件
 								const copyList = await this.needCopy(workspace_folder);
 								if (copyList.length > 0) {
 									vscode.window
@@ -40,39 +43,38 @@ export class createTemplateConfigFile {
 								}
 								vscode.window.showTextDocument(workspace_configFileNameUrl);
 							} else {
+								// 获取配置文件,模板文件路径
 								const configFileList = await this.getAllFile(
 									path.normalize(
 										path.resolve(__dirname, '../../public/TemplateFileConfig')
 									)
 								);
+								// 复制配置文件,模板文件到工作区
 								configFileList.forEach((url) => {
-									this.copyFile(
-										`${__dirname}/../../public/TemplateFileConfig${url}`,
-										`${workspace_folder.uri.fsPath}${url}`
-									);
+									if (!fs.existsSync(`${workspace_folder.uri.fsPath}/${url}`)) {
+										this.copyFile(
+											`${__dirname}/../../public/TemplateFileConfig/${url}`,
+											`${workspace_folder.uri.fsPath}/${url}`
+										);
+									}
 								});
-								let workspace_configFileName =
-									workspace_folder.uri.fsPath + '/.gitignore';
+								const workspace_configFileName = workspace_folder.uri.fsPath + '/.gitignore';
+								const workspace_configFileNameUrl=vscode.Uri.file(workspace_configFileName);
+								// 判断.gitignore是否存在
 								if (fs.existsSync(workspace_configFileName)) {
-									const gitignoreUrl = path.normalize(
-										path.resolve(workspace_folder.uri.fsPath, '.gitignore')
-									);
-									fs.readFile(gitignoreUrl, (err, data) => {
-										if (err) {
-											this.error(err.message);
-										}
-										data = Buffer.concat([
-											data,
-											Buffer.from('\n.ftemplate.js\nfileTemplate')
-										]);
-										fs.writeFile(gitignoreUrl, data, 'utf8', (err) => {
-											if (err) {
-												this.error(err.message);
+									// 读取.gitignore
+									let data = await vscode.workspace.fs.readFile(workspace_configFileNameUrl);
+										const gitignoreStr = data.toString();
+										['.ftemplate.js', 'fileTemplate'].forEach((path) => {
+											if (!gitignoreStr.includes(path)) {
+												data = Buffer.concat([data, Buffer.from(`\n${path}`)]);
 											}
 										});
-									});
+									await vscode.workspace.fs.writeFile(workspace_configFileNameUrl, data);
 								}
 							}
+						} else {
+							this.error('未发现工作区,无法进行创建!');
 						}
 					} catch (err: any) {
 						this.error(err.message);
@@ -82,6 +84,7 @@ export class createTemplateConfigFile {
 			)
 		);
 	}
+	// 选择工作区
 	async selectWorkspace() {
 		const workspace_folders = vscode.workspace.workspaceFolders || [];
 		if (workspace_folders.length === 1) {
@@ -106,6 +109,7 @@ export class createTemplateConfigFile {
 			}
 		}
 	}
+	// 判断是否需要复制文件
 	async needCopy(
 		workspace_folder: vscode.WorkspaceFolder
 	): Promise<{ to: string; from: string }[]> {
@@ -129,74 +133,22 @@ export class createTemplateConfigFile {
 		default_template.forEach((url) => {
 			if (!workspace_template.includes(url)) {
 				arr.push({
-					to: `${__dirname}/../../public/TemplateFileConfig/fileTemplate${url}`,
-					from: `${workspace_folder.uri.fsPath}/${config_temp.templates.path}${url}`
+					to: `${__dirname}/../../public/TemplateFileConfig/fileTemplate/${url}`,
+					from: `${workspace_folder.uri.fsPath}/${config_temp.templates.path}/${url}`
 				});
 			}
-		}); 'lryessczfrx5uhjfpjcfr46awonuyn7b5yhqjzdwdmwwc5xx3nsa';
+		});
 		return arr;
 	}
+	// 获取路径下所有文件
 	async getAllFile(folderPath: string): Promise<string[]> {
-		const fileDisplay = (
-			filePath: string,
-			folderPath: string = ''
-		): Promise<string[]> => {
-			if (!folderPath) {
-				folderPath = filePath;
-			}
-			const Judgment = (filename: string): Promise<string[]> => {
-				return new Promise((resolve) => {
-					//获取当前文件的绝对路径
-					const filedir = path.join(filePath, filename);
-					// fs.stat(path)执行后，会将stats类的实例返回给其回调函数。
-					fs.stat(filedir, async (eror, stats) => {
-						if (eror) {
-							this.error(eror.message);
-							return;
-						}
-						// 是否是文件
-						const isFile = stats.isFile();
-						// 是否是文件夹
-						const isDir = stats.isDirectory();
-						if (isFile) {
-							resolve([filedir.replace(folderPath, '').replace(/\\/g, '/')]);
-						}
-						// 如果是文件夹
-						if (isDir) {
-							const flies = await fileDisplay(filedir, folderPath);
-							resolve(flies);
-						}
-					});
-				});
-			};
-			return new Promise((resolve) => {
-				if (!fs.existsSync(filePath)) {
-					resolve([]);
-				} else {
-					fs.readdir(filePath, (err, files) => {
-						if (err) {
-							this.error(err.message);
-							return;
-						}
-						const fileList: string[] = [];
-						const max = files.length - 1;
-						files.forEach(async (filename, i) => {
-							const flie = await Judgment(filename);
-							fileList.push(...flie);
-							if (i === max) {
-								resolve(fileList);
-							}
-						});
-					});
-				}
-			});
-		};
-		const data = await fileDisplay(folderPath);
-		return data;
+		return await getAll(folderPath);
 	}
+	// 复制文件
 	copyFile(from: string, to: string) {
 		vscode.workspace.fs.copy(vscode.Uri.file(from), vscode.Uri.file(to));
 	}
+	// 弹出错误信息
 	error(message: string) {
 		vscode.window.showErrorMessage(message);
 	}
