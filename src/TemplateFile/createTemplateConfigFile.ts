@@ -58,19 +58,27 @@ export class createTemplateConfigFile {
 										);
 									}
 								});
-								const workspace_configFileName = workspace_folder.uri.fsPath + '/.gitignore';
-								const workspace_configFileNameUrl=vscode.Uri.file(workspace_configFileName);
+								const workspace_configFileName =
+									workspace_folder.uri.fsPath + '/.gitignore';
+								const workspace_configFileNameUrl = vscode.Uri.file(
+									workspace_configFileName
+								);
 								// 判断.gitignore是否存在
 								if (fs.existsSync(workspace_configFileName)) {
 									// 读取.gitignore
-									let data = await vscode.workspace.fs.readFile(workspace_configFileNameUrl);
-										const gitignoreStr = data.toString();
-										['.ftemplate.js', 'fileTemplate'].forEach((path) => {
-											if (!gitignoreStr.includes(path)) {
-												data = Buffer.concat([data, Buffer.from(`\n${path}`)]);
-											}
-										});
-									await vscode.workspace.fs.writeFile(workspace_configFileNameUrl, data);
+									let data = await vscode.workspace.fs.readFile(
+										workspace_configFileNameUrl
+									);
+									const gitignoreStr = data.toString();
+									['.ftemplate.js', 'fileTemplate'].forEach((path) => {
+										if (!gitignoreStr.includes(path)) {
+											data = Buffer.concat([data, Buffer.from(`\n${path}`)]);
+										}
+									});
+									await vscode.workspace.fs.writeFile(
+										workspace_configFileNameUrl,
+										data
+									);
 								}
 							}
 						} else {
