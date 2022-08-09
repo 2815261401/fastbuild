@@ -143,6 +143,9 @@ export class createTemplate {
 						this.selectFolder.path
 					)
 				);
+				if (!(exist&&!this.config.overwrite)) {
+					
+				}
 				console.log('file', file);
 			}
 			return file;
