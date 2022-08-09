@@ -100,7 +100,7 @@ export class createTemplate {
 	}
 	// 创建模板
 	async createTemplateFile(selectTemplate: TemplateType, templateType: string) {
-		let fileList = [];
+		let fileList: TemplateType[] = [];
 		if (selectTemplate.type === 1) {
 			// 如果是文件夹则获取所有文件,文件夹
 			fileList = await getAll(selectTemplate.path, this.delimiter, true);
@@ -124,11 +124,26 @@ export class createTemplate {
 					const module = await vscode.window.showInputBox({
 						placeHolder: `请输入模块名称(模板位置:${file.allName})`
 					});
-					// 将名字自定义的字段替换输入的
-					file.name = file.name.replace(custom, module);
-					fs.existsSync(this.getPath(file.name, this.selectFolder.path));
+					if (module) {
+						// 将名字自定义的字段替换输入的
+						fileList.forEach((data) => {
+							if (data.allName.indexOf(file.allName) === 0) {
+								file.name = file.name.replace(custom, module);
+							}
+						});
+					}
 					return custom;
 				});
+			}
+			if (file.type===2) {
+				// 文件是否已经存在
+				const exist = fs.existsSync(
+					this.getPath(
+						file.allName.split(this.delimiter).join('/'),
+						this.selectFolder.path
+					)
+				);
+				console.log('file', file);
 			}
 			return file;
 		});
