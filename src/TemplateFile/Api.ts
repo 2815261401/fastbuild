@@ -10,10 +10,13 @@ export class TemplateType {
 	allName!: string;
 	type: number;
 	children!: TemplateType[];
+	rootPath!: string;
+	rootName!: string;
 	constructor(
 		type: number,
 		filePath?: string,
 		parPath?: string,
+		rootPath?: string,
 		allName?: string
 	) {
 		this.type = type;
@@ -26,6 +29,11 @@ export class TemplateType {
 			this.parPath = parPath;
 			const parPathList = parPath.split('\\');
 			this.parName = parPathList[parPathList.length - 1];
+		}
+		if (rootPath) {
+			this.rootPath = rootPath;
+			const rootPathList = rootPath.split('\\');
+			this.rootName = rootPathList[rootPathList.length - 1];
 		}
 		if (allName) {
 			this.allName = allName;
@@ -42,13 +50,24 @@ export class TemplateType {
 	}
 }
 
+// 异步等待合并数组,仅异步时使用,可用于循环时强制等待,防止数据丢失
 export const asyncConcatArray = async (
 	array: any[],
-	promise: (value: any[] | PromiseLike<any[]>) => Promise<any[]>
-) => {
-	for (let i = 0; i < array.length; i++) {
-		const arr=await promise();
-	}
+	promise: (value: any) => Promise<TemplateType[]>
+): Promise<TemplateType[]> => {
+	return new Promise((resolve) => {
+		// 自启实施合并数组
+		(async function carryOut(i: number = 1, arr: TemplateType[] = []) {
+			// 执行由外部传进的方法
+			const data = await promise(array[i - 1]);
+			// 循环次数达到时返回数组
+			if (i === array.length) {
+				resolve(arr.concat(data));
+			} else {
+				carryOut(i + 1, arr.concat(data));
+			}
+		})();
+	});
 };
 
 // 重载函数,仅有一个参数时调用
@@ -90,6 +109,8 @@ export async function getAll(
 					const isFile = stats.isFile();
 					// 是否是文件夹
 					const isDir = stats.isDirectory();
+					const folderPathList = folderPath.split('\\');
+					const folderName = folderPathList[folderPathList.length - 1];
 					if (isFile) {
 						if (complex) {
 							const parent = filePath.replace(`/`, '\\');
@@ -98,7 +119,9 @@ export async function getAll(
 								2,
 								filedir,
 								parent,
-								filedir.replace(`${folderPath}\\`, '').replace(/\\/g, format)
+								folderPath,
+								`${folderName}${format}` +
+									filedir.replace(`${folderPath}\\`, '').replace(/\\/g, format)
 							);
 							resolve([templateType]);
 						} else {
@@ -117,7 +140,9 @@ export async function getAll(
 								1,
 								filedir,
 								parent,
-								filedir.replace(`${folderPath}\\`, '').replace(/\\/g, format)
+								folderPath,
+								`${folderName}${format}` +
+									filedir.replace(`${folderPath}\\`, '').replace(/\\/g, format)
 							);
 							resolve([templateType, ...flies]);
 						} else {
@@ -133,36 +158,26 @@ export async function getAll(
 				resolve([]);
 			} else {
 				// 读取文件夹
-				fs.readdir(filePath, (err, files) => {
+				fs.readdir(filePath, async (err, files) => {
 					if (err) {
 						throw new Error(err.message);
 					}
 					let fileList: string[] = [];
+					// 如果不存在子级直接返回
 					if (files.length <= 0) {
 						resolve(fileList);
 					}
-					asyncConcatArray(fileList,);
-					const max = files.length - 1;
-					// 循环判断内部的内容是文件还是文件夹
-					files.forEach(async (filename, i) => {
-						const flie = await Judgment(filename);
-						if (filename === 'test') {
-							console.log(flie);
-							// fileList.push(...flie);
-							fileList = fileList.concat(flie);
-							console.log('fileList', fileList, fileList.length);
-						}
-						// 是否已全部判断
-						if (i === max) {
-							resolve(fileList);
-						}
-					});
+					// 进行异步等待,防止得到数据时,函数还未执行完毕
+					const data = await asyncConcatArray(
+						files,
+						(v) => Judgment(v) /* 循环判断内部的内容是文件还是文件夹 */
+					);
+					resolve(data);
 				});
 			}
 		});
 	};
 	// 获取文件夹内部所有文件
 	const data = await fileDisplay(folderPath);
-	console.log('data', data, data.length);
 	return data;
 }

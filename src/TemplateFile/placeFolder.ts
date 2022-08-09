@@ -1,6 +1,6 @@
 import path = require('path');
 const weeks = ['一', '二', '三', '四', '五', '六', '日'];
-const placeFolder = [];
+const placeFolder:[string|RegExp,Function][] = [];
 
 placeFolder.push([
   '%(\\s*)folder(\\s*)%',
