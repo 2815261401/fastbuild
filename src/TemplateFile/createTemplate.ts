@@ -135,16 +135,18 @@ export class createTemplate {
 					return custom;
 				});
 			}
-			if (file.type===2) {
-				// 文件是否已经存在
-				const exist = fs.existsSync(
-					this.getPath(
-						file.allName.split(this.delimiter).join('/'),
-						this.selectFolder.path
-					)
+			if (file.type === 2) {
+				const target = this.getPath(
+					file.allName.split(this.delimiter).join('/'),
+					this.selectFolder.path
 				);
-				if (!(exist&&!this.config.overwrite)) {
-					
+				// 文件是否已经存在
+				const exist = fs.existsSync(target);
+				if (!(exist && !this.config.overwrite)) {
+					const data = await vscode.workspace.fs.readFile( vscode.Uri.file(file.path));
+					let content = new TextDecoder('utf-8').decode(data);
+					content = this.parse(content);
+					await vscode.workspace.fs.writeFile(vscode.Uri.file(target), Buffer.from(content));
 				}
 				console.log('file', file);
 			}
