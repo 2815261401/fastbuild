@@ -11,16 +11,9 @@ module.exports = {
     }
   ],
   // 占位符
-  /* env = {
-    current: 当前选择的文件目录
-    folder: path.parse(current)
-    workspaceFolder: 所在的工作区目录
-    configFile: 配置文件目录
-    templateFolder: 模板目录
-    templateName: 模板名称
-    module: 模块名称
-  }
-  */
+  /**
+   * ? %custom%: 自定义名称
+   */
   placeholder: [
 		[
 			'%name%',
@@ -32,11 +25,12 @@ module.exports = {
 					: context.module.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
 			} // [正则表达式, 返回函数]
 		]
-	],
-  // 模板忽略配置
-  exclude: [
-
   ],
+  /** 模板忽略配置,仅支持字符串,正则表达式,列如
+   * * /test/ RegExp类型
+   * * 'test' string类型
+   */
+  exclude: [],
 	// 如果已经存在,是否强制覆盖(默认为false)
 	overwrite: false,
 	// 是否忽略系统占位符
