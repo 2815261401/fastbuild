@@ -1,5 +1,5 @@
 import path = require('path');
-const weeks = ['一', '二', '三', '四', '五', '六', '日'];
+const weeks = ['日','一', '二', '三', '四', '五', '六'];
 const placeFolder:[string|RegExp,Function][] = [];
 
 placeFolder.push([
@@ -17,6 +17,13 @@ placeFolder.push([
 ]);
 
 placeFolder.push([
+  '%(\\s*)FOLDER(\\s*)%',
+  (context: { folder: string; }) => {
+    return path.parse(context.folder).name.toUpperCase();
+  },
+]);
+
+placeFolder.push([
   '%(\\s*)module(\\s*)%',
   (context: { module: string; }) => {
     return context.module.toLowerCase();
@@ -25,6 +32,13 @@ placeFolder.push([
 
 placeFolder.push([
   '%(\\s*)Module(\\s*)%',
+  (context: { module: any; }) => {
+    return context.module;
+  },
+]);
+
+placeFolder.push([
+  '%(\\s*)MODULE(\\s*)%',
   (context: { module: any; }) => {
     return context.module;
   },

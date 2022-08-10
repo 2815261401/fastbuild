@@ -98,6 +98,83 @@ export class createTemplate {
 		);
 		context.subscriptions.push(disposable);
 	}
+	// 格式化字符串内容
+	async parse(
+		content: string,
+		file: TemplateType,
+		placeHolder: string,
+		cb?: (data: { content: string; custom: any; module: string }) => string
+	) {
+		// 初始化占位符列表
+		let placeHolders: { name: string | RegExp; cb: Function }[] = [];
+		// 判断是否忽略系统占位符
+		if (!this.config.ignoreDefaultPlaceholder) {
+			placeHolders = this.placeHolders.map((place) => ({
+				name: place[0],
+				cb: place[1]
+			}));
+		}
+		// 将用户自定义占位符加入列表
+		this.config.placeholder.forEach((place) => {
+			// 判断占位符是否已存在
+			const index = placeHolders.findIndex((item) => item.name === place[0]);
+			// 如果存在
+			if (index > -1) {
+				// 将占位符函数替换为用户自定义的
+				placeHolders[index].cb = place[1];
+			} else {
+				// 如果不存在则加入
+				placeHolders.push({
+					name: place[0],
+					cb: place[1]
+				});
+			}
+		});
+		// 对所有的占位符执行替换操作
+		placeHolders.forEach((item) => {
+			// 加入全局替换
+			const regexp = new RegExp(item.name, 'g');
+			if (typeof item.cb === 'function') {
+				const allNameList = file.allName.split(this.delimiter);
+				const allName = allNameList[allNameList.length - 1];
+				// 执行替换
+				content = content.replace(
+					regexp,
+					item.cb({
+						folder: this.selectFolder.name,
+						folderPath: this.selectFolder.path,
+						workspaceFolder: path.parse(this.workspaceFolderUri.path).name,
+						templateFolder: file.rootName,
+						module: path.parse(allName).name,
+						name: path.parse(allName).base
+					})
+				);
+			}
+		});
+		// 判断是否有自定义模板
+		if (/\%custom\%/.test(content)) {
+			// 获取自定义字段列表
+			const customList = content.match(/\%custom\%/g) || [];
+			// 强制等待,自定义字段一个一个替换
+			await asyncConcatArray(customList, async (custom, i) => {
+				// 获取自定义数据
+				const module = await vscode.window.showInputBox({
+					placeHolder: `${placeHolder}(${i})`
+				})||'custom';
+				if (module) {
+					if (cb) {
+						// 如果存在回调,执行回调
+						content = cb({ content, custom, module });
+					} else {
+						// 否则执行替换
+						content = content.replace(custom, module);
+					}
+				}
+				return custom;
+			});
+		}
+		return content;
+	}
 	// 创建模板
 	async createTemplateFile(selectTemplate: TemplateType, templateType: string) {
 		let fileList: TemplateType[] = [];
@@ -106,6 +183,8 @@ export class createTemplate {
 			fileList = await getAll(selectTemplate.path, this.delimiter, true);
 		} else {
 			// 如果是文件,则加入列表,方便管理
+			const nameList = selectTemplate.allName.split(this.delimiter);
+			selectTemplate.allName = nameList[nameList.length - 1];
 			fileList = [selectTemplate];
 		}
 		// 过滤被忽略的文件,文件夹
@@ -114,41 +193,51 @@ export class createTemplate {
 		);
 		// 强制等待,模板文件一个一个生成
 		await asyncConcatArray(fileList, async (file) => {
-			// 判断是否有自定义模板
-			if (/\%custom\%/.test(file.name)) {
-				// 获取自定义字段列表
-				const customList = file.name.match(/\%custom\%/gi);
-				// 强制等待,自定义字段一个一个替换
-				await asyncConcatArray(customList, async (custom) => {
-					// 获取自定义数据
-					const module = await vscode.window.showInputBox({
-						placeHolder: `请输入模块名称(模板位置:${file.allName})`
-					});
-					if (module) {
-						// 将名字自定义的字段替换输入的
-						fileList.forEach((data) => {
-							if (data.allName.indexOf(file.allName) === 0) {
-								file.name = file.name.replace(custom, module);
-							}
+			// 对文件名进行格式化
+			file.allName = await this.parse(
+				file.allName,
+				file,
+				`请输入名称,模板位置:${file.allName}`,
+				({ content, custom, module }) => {
+					fileList
+						// 筛选当前文件夹内的所有文件,文件夹
+						.filter((item) => item.allName.indexOf(file.allName) === 0)
+						// 对文件夹内所有的文件,文件夹路径进行替换
+						.forEach((data) => {
+							data.allName = data.allName.replace(custom, module);
 						});
-					}
-					return custom;
-				});
-			}
+					// 返回替换后的文件路径
+					return content.replace(custom, module);
+				}
+			);
 			if (file.type === 2) {
+				// 获取模板生成的目标路径
 				const target = this.getPath(
 					file.allName.split(this.delimiter).join('/'),
 					this.selectFolder.path
 				);
 				// 文件是否已经存在
 				const exist = fs.existsSync(target);
+				// 排除文件存在且不允许覆盖的情况
 				if (!(exist && !this.config.overwrite)) {
-					const data = await vscode.workspace.fs.readFile( vscode.Uri.file(file.path));
+					// 获取模板数据
+					const data = await vscode.workspace.fs.readFile(
+						vscode.Uri.file(file.path)
+					);
+					// 将模板内容转化成字符串
 					let content = new TextDecoder('utf-8').decode(data);
-					content = this.parse(content);
-					await vscode.workspace.fs.writeFile(vscode.Uri.file(target), Buffer.from(content));
+					// 对模板内容进行格式化
+					content = await this.parse(
+						content,
+						file,
+						`请输入字段,位置: ${file.allName}`
+					);
+					// 将内容写入到指定位置的文件
+					await vscode.workspace.fs.writeFile(
+						vscode.Uri.file(target),
+						Buffer.from(content)
+					);
 				}
-				console.log('file', file);
 			}
 			return file;
 		});

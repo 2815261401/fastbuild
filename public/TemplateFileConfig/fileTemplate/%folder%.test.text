@@ -1,1 +1,15 @@
-%author%
+%custom%: 自定义名称
+%folder%: 右击文件夹名(全小写)
+%Folder%: 右击文件夹名
+%FOLDER%: 右击文件夹名(全大写)
+%module%: 模板文件名(全小写)
+%Module%: 模板文件名
+%MODULE%: 模板文件名(全大写)
+%timestamp%: 当前时间戳
+%year%: 当前年
+%day%: 当前周
+%month%: 当前月
+%date%: 当前天
+%hour%: 当前小时
+%minute%: 当前分钟
+%second%: 当前秒
