@@ -1,8 +1,6 @@
 # 通过模板配置快速创建文件
 
-这是一个 VSCode 插件,用来快速构建前端文件,目前将[Feather Template](https://marketplace.visualstudio.com/items?itemName=eayer.ftemplate)的功能整合了进来
-
-
+这是一个 VSCode 插件,用来快速构建文件
 
 ## 使用方法
 
@@ -20,7 +18,7 @@
 
   右键文件夹 - (通过模板) 新建文件
 
-> 空目录目前是无效的
+> 空目录是无效的
 
 ## 系统提供的占位符
 
