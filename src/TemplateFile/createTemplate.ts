@@ -178,13 +178,14 @@ export class createTemplate {
 	// 创建模板
 	async createTemplateFile(selectTemplate: TemplateType, templateType: string) {
 		let fileList: TemplateType[] = [];
+		const nameList = (selectTemplate.allName||selectTemplate.name).split(this.delimiter);
+		selectTemplate.allName = nameList[nameList.length - 1];
 		if (selectTemplate.type === 1) {
 			// 如果是文件夹则获取所有文件,文件夹
 			fileList = await getAll(selectTemplate.path, this.delimiter, true);
+			fileList.push(selectTemplate);
 		} else {
 			// 如果是文件,则加入列表,方便管理
-			const nameList = selectTemplate.allName.split(this.delimiter);
-			selectTemplate.allName = nameList[nameList.length - 1];
 			fileList = [selectTemplate];
 		}
 		// 过滤被忽略的文件,文件夹
@@ -210,14 +211,14 @@ export class createTemplate {
 					return content.replace(custom, module);
 				}
 			);
+			// 获取模板生成的目标路径
+			const target = this.getPath(
+				file.allName.split(this.delimiter).join('/'),
+				this.selectFolder.path
+			);
+			// 文件是否已经存在
+			const exist = fs.existsSync(target);
 			if (file.type === 2) {
-				// 获取模板生成的目标路径
-				const target = this.getPath(
-					file.allName.split(this.delimiter).join('/'),
-					this.selectFolder.path
-				);
-				// 文件是否已经存在
-				const exist = fs.existsSync(target);
 				// 排除文件存在且不允许覆盖的情况
 				if (!(exist && !this.config.overwrite)) {
 					// 获取模板数据
@@ -238,6 +239,8 @@ export class createTemplate {
 						Buffer.from(content)
 					);
 				}
+			} else if (file.type === 1&&!exist) {
+				await vscode.workspace.fs.createDirectory(vscode.Uri.file(target));
 			}
 			return file;
 		});

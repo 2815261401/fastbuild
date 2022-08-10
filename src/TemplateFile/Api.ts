@@ -53,17 +53,17 @@ export class TemplateType {
 // 异步等待合并数组,仅异步时使用,可用于循环时强制等待,防止数据丢失
 export const asyncConcatArray = async (
 	array: any[],
-	promise: (value: any,i:number) => Promise<TemplateType[]>
+	promise: (value: any, i: number) => Promise<TemplateType[]>
 ): Promise<TemplateType[]> => {
 	return new Promise((resolve) => {
 		// 自启实施合并数组
-		(async function carryOut(i: number = 1, arr: TemplateType[] = []) {
-			// 执行由外部传进的方法
-			const data = await promise(array[i - 1],i);
+		(async function carryOut(i: number = 0, arr: TemplateType[] = []) {
 			// 循环次数达到时返回数组
 			if (i === array.length) {
-				resolve(arr.concat(data));
+				resolve(arr);
 			} else {
+				// 执行由外部传进的方法
+				const	data = await promise(array[i], i + 1);
 				carryOut(i + 1, arr.concat(data));
 			}
 		})();
