@@ -1,9 +1,9 @@
-# Change Log
+# 变更记录
 
-All notable changes to the "fast-build" extension will be documented in this file.
+## [0.0.2]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- 重写了创建模板的运行方法，现在支持选择模板类型，可以单独选择模板文件或选择整个文件夹作为模板。
 
-## [Unreleased]
+## [0.0.1]
 
-- Initial release
+- 首次发布

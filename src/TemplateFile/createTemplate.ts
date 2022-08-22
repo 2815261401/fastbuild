@@ -211,6 +211,7 @@ export class createTemplate {
 					return content.replace(custom, module);
 				}
 			);
+			console.log(fileList);
 			// 获取模板生成的目标路径
 			const target = this.getPath(
 				file.allName.split(this.delimiter).join('/'),
@@ -432,7 +433,7 @@ export class createTemplate {
 							if (fs.existsSync(template.path)) {
 								template.uri = vscode.Uri.file(template.path);
 							} else {
-								throw new Error(`模板路径不存在,请检查配置文件!`);
+								throw new Error(`模板路径不存在,请检查配置文件!或使用'创建构建工具模板文件'创建模板文件`);
 							}
 						} else {
 							throw new Error(`模板配置路径 ${template.path} 必须是目录`);

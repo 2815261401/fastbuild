@@ -15,14 +15,14 @@ module.exports = {
 	 * * %module%: 模板文件名(全小写)
 	 * * %Module%: 模板文件名
 	 * * %MODULE%: 模板文件名(全大写)
-	 * * %timestamp%: 当前时间戳
-	 * * %year%: 当前年
-	 * * %day%: 当前周
-	 * * %month%: 当前月
-	 * * %date%: 当前天
-	 * * %hour%: 当前小时
-	 * * %minute%: 当前分钟
-	 * * %second%: 当前秒
+	 * * %timestamp%: 时间戳
+	 * * %year%: 年
+	 * * %day%: 星期数
+	 * * %month%: 月
+	 * * %date%: 天
+	 * * %hour%: 小时
+	 * * %minute%: 分钟
+	 * * %second%: 秒
 	 */
 	// 自定义占位符
 	placeholder: [

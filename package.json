@@ -3,7 +3,7 @@
 	"displayName": "fast-build",
 	"description": "快速构建的工具",
 	"publisher": "lichenghao",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
@@ -31,7 +31,7 @@
 			},
 			{
 				"command": "fast-build.createConfigFile",
-				"title": "创建模板文件"
+				"title": "创建构建工具模板文件"
 			}
 		],
 		"menus": {
