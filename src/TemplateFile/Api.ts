@@ -63,7 +63,7 @@ export const asyncConcatArray = async (
 				resolve(arr);
 			} else {
 				// 执行由外部传进的方法
-				const	data = await promise(array[i], i + 1);
+				const data = await promise(array[i], i + 1);
 				carryOut(i + 1, arr.concat(data));
 			}
 		})();
