@@ -1,32 +1,49 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { createTemplate } from './TemplateFile/createTemplate';
-import { createTemplateConfigFile } from './TemplateFile/createTemplateConfigFile';
+import { commands, ExtensionContext, window } from 'vscode';
+import { TemplateFile } from './TemplateFile';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "fast-build" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand(
-		'fast-build.helloWorld',
-		() => {
-			// The code you place here will be executed every time your command is executed
-			// Display a message box to the user
-			vscode.window.showInformationMessage('Hello World from fast-build!');
-		}
+export function activate(context: ExtensionContext) {
+	context.subscriptions.push(
+		commands.registerCommand('fast-build.createConfigFile', async () => {
+			try {
+				const templateFile = new TemplateFile();
+				let selectFolder: string = '全部';
+				if (templateFile.workspaceFolders.length > 1) {
+					selectFolder =
+						(await window.showQuickPick(
+							['全部'].concat(
+								templateFile.workspaceFolders.map(({ name }) => name)
+							),
+							{
+								placeHolder: '请选择项目文件夹'
+							}
+						)) || '';
+				}
+				templateFile.workspaceFolders.forEach((Folder) => {
+					if (selectFolder === '全部' || selectFolder === Folder.name) {
+						templateFile.createTemplate(Folder.uri.fsPath);
+					}
+				});
+			} catch (error: any) {
+				window.showErrorMessage(error);
+			}
+		})
 	);
-
-	context.subscriptions.push(disposable);
-	new createTemplate(context);
-	new createTemplateConfigFile(context);
+	context.subscriptions.push(
+		commands.registerCommand('fast-build.create', (args) => {
+			try {
+				const templateFile = new TemplateFile();
+				const workspaceFolder = templateFile.workspaceFolders.find(
+					(Folder) => args.path.indexOf(Folder.uri.path) === 0
+				);
+				if (workspaceFolder) {
+					templateFile.createFileFromTemplates(workspaceFolder);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		})
+	);
+	// commands.executeCommand('fast-build.createConfigFile');
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {}

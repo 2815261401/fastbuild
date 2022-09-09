@@ -158,9 +158,10 @@ export class createTemplate {
 			// 强制等待,自定义字段一个一个替换
 			await asyncConcatArray(customList, async (custom, i) => {
 				// 获取自定义数据
-				const module = await vscode.window.showInputBox({
-					placeHolder: `${placeHolder}(${i})`
-				})||'custom';
+				const module =
+					(await vscode.window.showInputBox({
+						placeHolder: `${placeHolder}(${i})`
+					})) || 'custom';
 				if (module) {
 					if (cb) {
 						// 如果存在回调,执行回调
@@ -178,7 +179,9 @@ export class createTemplate {
 	// 创建模板
 	async createTemplateFile(selectTemplate: TemplateType, templateType: string) {
 		let fileList: TemplateType[] = [];
-		const nameList = (selectTemplate.allName||selectTemplate.name).split(this.delimiter);
+		const nameList = (selectTemplate.allName || selectTemplate.name).split(
+			this.delimiter
+		);
 		selectTemplate.allName = nameList[nameList.length - 1];
 		if (selectTemplate.type === 1) {
 			// 如果是文件夹则获取所有文件,文件夹
@@ -240,7 +243,7 @@ export class createTemplate {
 						Buffer.from(content)
 					);
 				}
-			} else if (file.type === 1&&!exist) {
+			} else if (file.type === 1 && !exist) {
 				await vscode.workspace.fs.createDirectory(vscode.Uri.file(target));
 			}
 			return file;
@@ -433,7 +436,9 @@ export class createTemplate {
 							if (fs.existsSync(template.path)) {
 								template.uri = vscode.Uri.file(template.path);
 							} else {
-								throw new Error(`模板路径不存在,请检查配置文件!或使用'创建构建工具模板文件'创建模板文件`);
+								throw new Error(
+									`模板路径不存在,请检查配置文件!或使用'创建构建工具模板文件'创建模板文件`
+								);
 							}
 						} else {
 							throw new Error(`模板配置路径 ${template.path} 必须是目录`);

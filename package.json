@@ -40,7 +40,7 @@
 				{
 					"command": "fast-build.create",
 					"when": "explorerResourceIsFolder",
-					"group": "navigation"
+					"group": "1_modification"
 				}
 			]
 		},
