@@ -107,6 +107,31 @@ module.exports = {
 
 ```
 
+## 注意!!!
+
+## 不要讲 template 转化成字符串,template 理论上是无限的
+
+placeholder的类型是```[string | RegExp, (context)=>string][]```,其中context的内容如下:
+```
+{
+	folder: string; 右击文件夹名称
+	folderPath: string; 右击文件夹路径
+	workspaceFolder: string; 当前工作区的文件夹名称
+	templateFolder: string; 当前选中的你创建的模板文件夹名称
+	module: string; 当前文件(文件夹)名称
+	template: TemplateFileData 模板对应的实体
+	{
+		name: string; 当前创建的文件(文件夹)模板的名称
+		parent: TemplateFileData; 只要不是模板文件夹都会有,例如: fileTemplate 就没有
+		type: number; 1 文件,2 文件夹
+		suffix: string; 文件后缀,只有文件才有
+		children: TemplateFileData[]; 文件夹内的文件和文件夹,只要文件夹才有
+		alias: string; 格式化后的文件(文件夹)名,基本是你要生成的名称
+		fullName: string; 完整文件(目录)名
+	}
+}
+```
+
 模板配置列表支持对象配置，path 的子目录将自动解析为模板列表。实现快速设置。
 
 ```
