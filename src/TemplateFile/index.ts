@@ -643,7 +643,8 @@ export class TemplateFile {
 						folderPath: this.folder.fsPath, // 右击文件夹路径
 						workspaceFolder: workspaceFolder.name, // 当前工作区的文件夹名称
 						templateFolder: template.rootParent.name, // 当前选中的模板文件夹名称
-						module: template.name // 当前文件(文件夹)名称
+						module: template.name, // 当前文件(文件夹)名称
+						template // 模板实体
 					})
 				);
 			}
