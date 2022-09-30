@@ -677,6 +677,7 @@ export class TemplateFile {
 					}
 				}
 				await workspace.fs.writeFile(Uri.file(target), Buffer.from(content));
+				window.showTextDocument(Uri.file(target));
 			}
 		}
 		// 如果是文件夹
