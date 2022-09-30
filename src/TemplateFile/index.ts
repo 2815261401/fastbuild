@@ -577,7 +577,58 @@ export class TemplateFile {
 		template: TemplateFileData
 	) {
 		// 格式化内容
-		const parse = (content: string): string => {
+		const parse = async (
+			content: string,
+			isName: boolean = false
+		): Promise<string> => {
+			// 判断是否有自定义模板
+			if (!config.ignoreDefaultPlaceholder && /\%custom\%/.test(content)) {
+				// 获取自定义字段列表
+				const customList = content.match(/\%custom\%/g) || [];
+				// 循环替换自定义字段
+				for (let i = 0; i < customList.length; i++) {
+					// 取得当前自定义字段
+					const custom = customList[i];
+					// 根据用户输入的内容进行替换
+					const module = await window.showInputBox({
+						placeHolder: isName
+							? `请输入 ${
+									template.fullName
+							  } 的自定义名称,位置: ${template.getAllname(true)}`
+							: `请输入自定义数据,位置: ${template.getAllname(true)}(${i})`,
+						prompt: isName
+							? `请输入 ${
+									template.fullName
+							  } 的自定义名称,位置: ${template.getAllname(true)}`
+							: `请输入自定义数据,位置: ${template.getAllname(true)}(${i})`,
+						ignoreFocusOut: true,
+						value: 'custom',
+						validateInput(value: string) {
+							if (isName && !value) {
+								return `${template.type === 1 ? '文件' : '文件夹'}名不能为空`;
+							} else if (
+								isName &&
+								/\/|\\|\:|\*|\?|\.|\"|\<|\>|\|/g.test(value)
+							) {
+								return `${
+									template.type === 1 ? '文件' : '文件夹'
+								}名不能包含: / \ : * ? . " < > |`;
+							} else {
+								return null;
+							}
+						}
+					});
+					if (!module) {
+						window.showInformationMessage(
+							`已停止生成${
+								template.type === 1 ? '文件' : '文件夹及其子级'
+							}:${template.getAllname(true)}`
+						);
+						return '';
+					}
+					content = content.replace(custom, module);
+				}
+			}
 			// 循环格式化规则
 			for (let i = 0; i < config.placeholders.length; i++) {
 				// 获取该次循环的规则
@@ -598,8 +649,13 @@ export class TemplateFile {
 			}
 			return content;
 		};
+		// 获取格式化后的名字
+		const name = await parse(template.name, true);
+		if (!name) {
+			return;
+		}
 		// 模板数据设置格式化后的名称
-		template.setAlias(parse(template.name));
+		template.setAlias(name);
 		// 文件目标位置
 		const target = path.resolve(this.folder.fsPath, template.getEditPath());
 		// 判断文件(文件夹)是否已存在
@@ -612,10 +668,14 @@ export class TemplateFile {
 				const data = await workspace.fs.readFile(Uri.file(template.allPath));
 				// 将模板内容转化成字符串
 				let content = new TextDecoder('utf-8').decode(data);
-				await workspace.fs.writeFile(
-					Uri.file(target),
-					Buffer.from(parse(content))
-				);
+				// 将内容进行格式化
+				if (content) {
+					content = await parse(content);
+					if (!content) {
+						return;
+					}
+				}
+				await workspace.fs.writeFile(Uri.file(target), Buffer.from(content));
 			}
 		}
 		// 如果是文件夹
@@ -624,13 +684,13 @@ export class TemplateFile {
 			if (!exist) {
 				// 创建文件夹
 				await workspace.fs.createDirectory(Uri.file(target));
-				// 获取文件夹内的文件数据
-				const children = template.children || [];
-				// 循环生成文件
-				for (let i = 0; i < children.length; i++) {
-					// 执行生成文件函数
-					this.generateFiles(workspaceFolder, config, children[i]);
-				}
+			}
+			// 获取文件夹内的文件数据
+			const children = template.children || [];
+			// 循环生成文件
+			for (let i = 0; i < children.length; i++) {
+				// 执行生成文件函数
+				await this.generateFiles(workspaceFolder, config, children[i]);
 			}
 		}
 	}
