@@ -3,7 +3,7 @@
 	"displayName": "fast-build",
 	"description": "快速构建的工具",
 	"publisher": "lichenghao",
-	"version": "0.0.2",
+	"version": "0.0.5",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
@@ -51,6 +51,11 @@
 					"type": "string",
 					"default": " > ",
 					"markdownDescription": "文件路径的分割符,默认是```' > '```"
+				},
+				"fastBuild.ESCBack": {
+					"default": false,
+					"type": "boolean",
+					"markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
 				}
 			}
 		}

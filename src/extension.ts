@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, window } from 'vscode';
+import { commands, ExtensionContext, Uri, window } from 'vscode';
 import { TemplateFile } from './TemplateFile';
 
 export function activate(context: ExtensionContext) {
@@ -29,9 +29,9 @@ export function activate(context: ExtensionContext) {
 		})
 	);
 	context.subscriptions.push(
-		commands.registerCommand('fast-build.create', (args) => {
+		commands.registerCommand('fast-build.create', (args: Uri) => {
 			try {
-				const templateFile = new TemplateFile();
+				const templateFile = new TemplateFile(args);
 				const workspaceFolder = templateFile.workspaceFolders.find(
 					(Folder) => args.path.indexOf(Folder.uri.path) === 0
 				);
