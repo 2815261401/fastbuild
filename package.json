@@ -3,7 +3,7 @@
 	"displayName": "fast-build",
 	"description": "快速构建的工具",
 	"publisher": "lichenghao",
-	"version": "0.0.5",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
