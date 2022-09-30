@@ -30,8 +30,12 @@ module.exports = {
 			'%name%',
 			(context) => {
 				return context.module === 'index'
-					? context.folder.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
-					: context.module.replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
+					? context.template.parent.alias.replace(/( |^)[a-z]/g, (L) =>
+							L.toUpperCase()
+					  )
+					: context.template.parent.alias.replace(/( |^)[a-z]/g, (L) =>
+							L.toUpperCase()
+					  );
 			} // [正则表达式, 返回函数]
 		]
 	],
