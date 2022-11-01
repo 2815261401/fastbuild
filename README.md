@@ -4,7 +4,7 @@
 
 ## 使用方法
 
-创建模板目录内容,在没有配置文件(config.template)的情况下,默认使用 fileTemplate 目录作为模板目录.
+创建模板目录内容,在没有配置文件(.config.template)的情况下,默认使用 fileTemplate 目录作为模板目录.
 
 - 创建模板目录(fileTemplate)
 
@@ -42,7 +42,7 @@
 - %minute% : 分
 - %second% : 秒
 
-## 配置文件config.template
+## 配置文件.config.template
 
 可以通过命令( 创建构建工具模板文件 )快速创建配置文件.
 
@@ -86,11 +86,15 @@ module.exports = {
 	placeholder: [
 		[
 			'%name%',
-			(context) => {
-				return context.module === 'index'
-					? context.folder.replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
-					: context.module.replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
-			} // [正则表达式, 返回函数]
+    		(context) => {
+    			return context.module === 'index'
+    				? (
+    						context.template.parent.alias || context.template.parent.name
+    				  ).replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+    				: context.module.replace(/( |^)[a-z]/g, (L) =>
+    						L.toUpperCase()
+    				  );
+    		} // [正则表达式, 返回函数]
 		]
 	],
 	/** 模板忽略配置,仅支持字符串,正则表达式,列如
