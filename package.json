@@ -58,7 +58,26 @@
 					"markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
 				}
 			}
-		}
+		},
+		"languages": [
+			{
+				"id": "config.template",
+				"aliases": [
+					"配置文件"
+				],
+				"extensions": [
+					".config.template"
+				],
+				"configuration": "./template.configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "config.template",
+				"scopeName": "source.config.template",
+				"path": "./syntaxes/template.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -66,7 +85,9 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"postinstall": "run-s install:*",
+		"install:client": "cd client && npm install"
 	},
 	"dependencies": {
 		"lodash": "^4.17.21"
@@ -85,6 +106,7 @@
 		"eslint-plugin-prettier": "^4.2.1",
 		"glob": "^8.0.3",
 		"mocha": "^10.0.0",
+		"npm-run-all": "^4.1.5",
 		"prettier": "^2.7.1",
 		"typescript": "^4.7.4"
 	}
