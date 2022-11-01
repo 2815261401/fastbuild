@@ -4,8 +4,7 @@
 		"If you want to provide a fix or improvement, please create a pull request against the original repository.",
 		"Once accepted there, we are happy to receive an update request."
 	],
-	"version": "https://github.com/microsoft/TypeScript-TmLanguage/commit/73af17bf3e45339df06d92751ab366ce96c38516",
-	"name": "TEMPLATE",
+	"name": "config.template",
 	"scopeName": "source.config.template",
 	"patterns": [
 		{ "include": "#directives" },

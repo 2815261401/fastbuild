@@ -68,7 +68,14 @@
 				"extensions": [
 					".config.template"
 				],
-				"configuration": "./template.configuration.json"
+				"filenames": [
+					"jakefile"
+				],
+				"firstLine": "^#!.*\\bnode",
+				"mimetypes": [
+					"text/javascript"
+				],
+				"configuration": "./languages/template.configuration.json"
 			}
 		],
 		"grammars": [
@@ -76,6 +83,12 @@
 				"language": "config.template",
 				"scopeName": "source.config.template",
 				"path": "./syntaxes/template.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "config.template",
+				"path": "./snippets/config.template.code-snippets"
 			}
 		]
 	},
