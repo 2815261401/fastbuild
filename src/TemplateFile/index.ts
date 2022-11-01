@@ -284,9 +284,9 @@ class TemplatesConfig {
 			'%name%',
 			(context) => {
 				return context.module === 'index'
-					? context.folder.replace(/( |^)[a-z]/g, (L: string) =>
-							L.toUpperCase()
-					  )
+					? (
+							context.template.parent.alias || context.template.parent.name
+					  ).replace(/( |^)[a-z]/g, (L: string) => L.toUpperCase())
 					: context.module.replace(/( |^)[a-z]/g, (L: string) =>
 							L.toUpperCase()
 					  );
@@ -455,24 +455,6 @@ export class TemplateFile {
 		this.defaultSelect = workspace.getConfiguration().get('fastBuild.ESCBack');
 	}
 	/**
-	 * 为模板文件设置语言支持
-	 */
-	async setFileLanguage() {
-		try {
-			// 获取setting.json中的后缀支持
-			const data: { [x: string]: any } =
-				(await workspace.getConfiguration().get('files.associations')) || {};
-			// 修改config.template的语言为javascript
-			data['config.template'] = 'javascript';
-			//最后一个参数，为true时表示写入全局配置，为false或不传时则只写入工作区配置
-			await workspace
-				.getConfiguration()
-				.update('files.associations', data, true);
-		} catch (err: any) {
-			error(err.message);
-		}
-	}
-	/**
 	 * 获取系统配置数据
 	 * @returns 系统配置数据
 	 */
@@ -482,7 +464,10 @@ export class TemplateFile {
 		}
 		// 获取默认配置文件路径
 		const templatePath = path.normalize(
-			path.resolve(__dirname, '../../public/TemplateFileConfig/config.template')
+			path.resolve(
+				__dirname,
+				'../../public/TemplateFileConfig/.config.template'
+			)
 		);
 		// 避免读取配置时,受require缓存影响
 		delete require.cache[templatePath];
@@ -502,7 +487,7 @@ export class TemplateFile {
 			if (workspaceFolder) {
 				// 获取每个工作区的配置文件
 				const templatePath = path.normalize(
-					path.resolve(workspaceFolder.uri.fsPath, './config.template')
+					path.resolve(workspaceFolder.uri.fsPath, './.config.template')
 				);
 				// 如果工作区不存在配置文件
 				if (!existsSync(templatePath)) {
@@ -519,7 +504,7 @@ export class TemplateFile {
 				this.workspaceFolders.forEach((Folder) => {
 					// 获取每个工作区的配置文件
 					const templatePath = path.normalize(
-						path.resolve(Folder.uri.fsPath, './config.template')
+						path.resolve(Folder.uri.fsPath, './.config.template')
 					);
 					// 如果工作区不存在配置文件
 					if (!existsSync(templatePath)) {
@@ -548,15 +533,22 @@ export class TemplateFile {
 		try {
 			// 获取每个工作区的配置文件
 			const templatePath = path.normalize(
+				path.resolve(fspath, './.config.template')
+			);
+			// 获取旧版的配置文件
+			const old_templatePath = path.normalize(
 				path.resolve(fspath, './config.template')
 			);
+			if (existsSync(old_templatePath)) {
+				workspace.fs.delete(Uri.file(old_templatePath));
+			}
 			// 如果工作区不存在配置文件
 			if (!existsSync(templatePath)) {
 				workspace.fs.copy(
 					Uri.file(
-						`${__dirname}/../../public/TemplateFileConfig/config.template`
+						`${__dirname}/../../public/TemplateFileConfig/.config.template`
 					),
-					Uri.file(`${fspath}/config.template`)
+					Uri.file(`${fspath}/.config.template`)
 				);
 			} else {
 				window.showTextDocument(Uri.file(templatePath));
@@ -703,21 +695,23 @@ export class TemplateFile {
 	async createFileFromTemplates(workspaceFolder: WorkspaceFolder) {
 		try {
 			// 获取对应工作区的配置
-			const config = this.getProjectFile(workspaceFolder);
-			if (config) {
-				// 获取模板列表数据
-				const data = await config.getTemplateFiles(workspaceFolder);
-				// 执行选择,获取选择的数据
-				const template = await this.selectFileFromTemplates(config, [
-					data.map((arr) => arr[0])
-				]);
-				// 如果选择了模板
-				if (template) {
-					// 将模板数据设置为特殊开始模板
-					template.setIsStart(true);
-					// 执行生成文件
-					this.generateFiles(workspaceFolder, config, template);
-				}
+			let config = this.getProjectFile(workspaceFolder);
+			if (!config) {
+				this.createTemplate(workspaceFolder.uri.fsPath);
+				config = new TemplatesConfig();
+			}
+			// 获取模板列表数据
+			const data = await config.getTemplateFiles(workspaceFolder);
+			// 执行选择,获取选择的数据
+			const template = await this.selectFileFromTemplates(config, [
+				data.map((arr) => arr[0])
+			]);
+			// 如果选择了模板
+			if (template) {
+				// 将模板数据设置为特殊开始模板
+				template.setIsStart(true);
+				// 执行生成文件
+				this.generateFiles(workspaceFolder, config, template);
 			}
 		} catch (err: any) {
 			error(err.message);
