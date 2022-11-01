@@ -529,16 +529,17 @@ export class TemplateFile {
 	 * 创建配置文件
 	 * @param fspath 要创建的文件夹路径
 	 */
-	createTemplate(fspath: string) {
+	async createTemplate(fspath: string) {
 		try {
-			// 获取每个工作区的配置文件
+			// 获取每个工作区的配置文件路径
 			const templatePath = path.normalize(
 				path.resolve(fspath, './.config.template')
 			);
-			// 获取旧版的配置文件
+			// 获取旧版的配置文件路径
 			const old_templatePath = path.normalize(
 				path.resolve(fspath, './config.template')
 			);
+			// 如果存在旧版的配置文件,删除
 			if (existsSync(old_templatePath)) {
 				workspace.fs.delete(Uri.file(old_templatePath));
 			}
@@ -550,6 +551,19 @@ export class TemplateFile {
 					),
 					Uri.file(`${fspath}/.config.template`)
 				);
+				// 获取gitignore路径
+				const gitignore = path.normalize(path.resolve(fspath, './.gitignore'));
+				// 如果存在.gitignore文件
+				if (existsSync(gitignore)) {
+					let data = await workspace.fs.readFile(Uri.file(gitignore));
+					const gitignoreStr = data.toString();
+					['.config.template', 'fileTemplate'].forEach((path) => {
+						if (!gitignoreStr.includes(path)) {
+							data = Buffer.concat([data, Buffer.from(`\n${path}`)]);
+						}
+					});
+					workspace.fs.writeFile(Uri.file(gitignore), data);
+				}
 			} else {
 				window.showTextDocument(Uri.file(templatePath));
 			}
@@ -697,7 +711,7 @@ export class TemplateFile {
 			// 获取对应工作区的配置
 			let config = this.getProjectFile(workspaceFolder);
 			if (!config) {
-				this.createTemplate(workspaceFolder.uri.fsPath);
+				await this.createTemplate(workspaceFolder.uri.fsPath);
 				config = new TemplatesConfig();
 			}
 			// 获取模板列表数据
