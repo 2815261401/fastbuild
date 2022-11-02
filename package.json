@@ -13,7 +13,7 @@
 	"activationEvents": [
 		"onCommand:fast-build.createConfigFile",
 		"onCommand:fast-build.create",
-		"onStartupFinished"
+		"onLanguage:config.template"
 	],
 	"repository": {
 		"type": "git",
@@ -94,16 +94,21 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
 		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
+		"lint": "eslint src ./client/src ./server/src --ext ts",
 		"test": "node ./out/test/runTest.js",
 		"postinstall": "run-s install:*",
-		"install:client": "cd client && npm install"
+		"install:server": "cd server && npm install && cd ../",
+		"install:client": "cd client && npm install && cd ../"
 	},
 	"dependencies": {
-		"lodash": "^4.17.21"
+		"lodash": "^4.17.21",
+		"vscode-languageclient": "^8.0.2",
+		"log4js": "^6.7.0",
+		"vscode-languageserver": "^8.0.2",
+		"vscode-languageserver-textdocument": "^1.0.7"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",

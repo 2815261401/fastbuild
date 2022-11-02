@@ -95,7 +95,7 @@ export const placeFolder: [string | RegExp, Function][] = [
 ];
 
 // 异步等待合并数组,仅异步时使用,可用于循环时强制等待,防止数据丢失
-const asyncConcatArray = async (
+export const asyncConcatArray = async (
 	array: any[],
 	promise: (value: any, i: number) => Promise<any[]>
 ): Promise<any[]> => {

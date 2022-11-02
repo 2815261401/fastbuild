@@ -754,8 +754,6 @@ export class TemplateFile {
 				const lastIndex = templatesList.length - 1;
 				// 根据配置设置Esc的默认值
 				const defaultSelect = this.defaultSelect ? '返回' : '退出';
-				// 选中的模板数据,默认为空
-				let template = null;
 				// 获取模板合集的最后一个模板列表
 				let templates = templatesList[lastIndex];
 				// 选择列表中优先加入返回
