@@ -85,14 +85,13 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run webpack",
-		"webpack": "npm run yamltojson && rimraf client/out && rimraf server/out && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
+		"vscode:prepublish": "npm run yamltojson && npm run webpack",
+		"webpack": "rimraf client/out && rimraf server/out && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
 		"yamltojson": "npx js-yaml syntaxes/config.template.tmLanguage.yaml > syntaxes/config.template.tmLanguage.json",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint ./client/src ./server/src --ext .ts",
-		"test": "node ./client/out/test/runTest.js",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd .."
 	},
 	"dependencies": {

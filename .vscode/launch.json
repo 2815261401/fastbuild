@@ -35,14 +35,6 @@
 			],
 			"outFiles": ["${workspaceFolder}/client/out/test/**/*.js"],
 			"preLaunchTask": "${defaultBuildTask}"
-		},
-		{
-			"name": "Run Extension",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": ["--extensionDevelopmentPath=${workspaceFolder}"],
-			"outFiles": ["${workspaceFolder}/out/**/*.js"],
-			"preLaunchTask": "${defaultBuildTask}"
 		}
 	],
 	"compounds": [
