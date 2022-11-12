@@ -1,0 +1,16 @@
+{
+	"name": "fast-build-client",
+	"displayName": "fast-build-client",
+	"version": "0.0.1",
+	"author": "lichenghao",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/2815261401/fastbuild.git"
+	},
+	"engines": {
+		"vscode": "^1.69.0"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^7.0.0"
+	}
+}

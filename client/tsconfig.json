@@ -5,6 +5,5 @@
 	},
 	"include": ["src"],
 	"exclude": ["node_modules"],
-	"references": [{ "path": "./client" }, { "path": "./server" }],
-	"extends": "./tsconfig.base"
+	"extends": "../tsconfig.base"
 }

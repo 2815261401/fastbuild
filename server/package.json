@@ -1,0 +1,17 @@
+{
+	"name": "fast-build-server",
+	"displayName": "fast-build-server",
+	"version": "0.0.1",
+	"author": "lichenghao",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/2815261401/fastbuild.git"
+	},
+	"engines": {
+		"vscode": "^1.69.0"
+	},
+	"dependencies": {
+		"vscode-languageserver": "^7.0.0",
+		"vscode-languageserver-textdocument": "^1.0.4"
+	}
+}

@@ -8,20 +8,6 @@ import {
 	TextDocumentChangeEvent
 } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { configure, getLogger } from 'log4js';
-
-configure({
-	appenders: {
-		lsp_demo: {
-			type: 'dateFile',
-			filename: 'C:/Users/lich/Desktop/代码学习/fastbuild/log',
-			pattern: 'yyyy-MM-dd-hh.log',
-			alwaysIncludePattern: true
-		}
-	},
-	categories: { default: { appenders: ['lsp_demo'], level: 'debug' } }
-});
-const logger = getLogger();
 
 // 创建连接
 let connection = createConnection(ProposedFeatures.all);
@@ -69,7 +55,7 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 	return item;
 });
 const initialValidation = (textDocument: TextDocument) => {
-	logger.log(textDocument.getText());
+	console.log(textDocument.getText());
 };
 documents.onDidOpen((event: TextDocumentChangeEvent<TextDocument>) => {
 	initialValidation(event.document);

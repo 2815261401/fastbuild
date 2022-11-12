@@ -1,15 +1,47 @@
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import path = require('path');
 import { TextDecoder } from 'util';
 import { FileType, Uri, window, workspace, WorkspaceFolder } from 'vscode';
 import { placeFolder } from './tools';
 
 // 弹出报错信息
-const error = (message: string) => {
+export const error = (message: string) => {
 	window.showErrorMessage(message);
 	throw new Error(message);
 };
 
+/**
+ * 导入模块,防止打包后require无法使用
+ * @param path 文件路径
+ * @returns 文件内容
+ */
+const importModule = (path: string): Promise<any> => {
+	// 异步获取,防止文件过大出现异步
+	return new Promise((resolve, reject) => {
+		try {
+			function requireCustom(moduleName: string) {
+				let content = readFileSync(moduleName, 'utf8');
+				let fn = new Function(
+					'exports',
+					'module',
+					'require',
+					'__dirname',
+					'__filename',
+					content + '\n return module.exports'
+				);
+				let module = {
+					exports: {}
+				};
+				return fn(module.exports, module, requireCustom, __dirname, __filename);
+			}
+			const file = requireCustom(path);
+			resolve(file);
+		} catch (error) {
+			window.showTextDocument(Uri.file(path));
+			reject(new Error('配置文件不正确!请检查后再试'));
+		}
+	});
+};
 /**
  * 模板文件数据
  */
@@ -458,7 +490,7 @@ export class TemplateFile {
 	 * 获取系统配置数据
 	 * @returns 系统配置数据
 	 */
-	getSystemFile(): TemplatesConfig {
+	async getSystemFile(): Promise<TemplatesConfig> {
 		if (this.SystemTemplateConfig) {
 			return this.SystemTemplateConfig;
 		}
@@ -466,13 +498,11 @@ export class TemplateFile {
 		const templatePath = path.normalize(
 			path.resolve(
 				__dirname,
-				'../../public/TemplateFileConfig/.config.template'
+				'../../../public/TemplateFileConfig/.config.template'
 			)
 		);
-		// 避免读取配置时,受require缓存影响
-		delete require.cache[templatePath];
 		// 读取配置文件
-		const templateConfig = require(templatePath);
+		const templateConfig = await importModule(templatePath);
 		// 将配置数据记录到系统配置
 		this.SystemTemplateConfig = new TemplatesConfig(templateConfig);
 		return this.SystemTemplateConfig;
@@ -482,7 +512,7 @@ export class TemplateFile {
 	 * @param workspaceFolder 工作区
 	 * @returns 如果只有一个工作区,则返回这个工作区的模板配置数据
 	 */
-	getProjectFile(workspaceFolder?: WorkspaceFolder) {
+	async getProjectFile(workspaceFolder?: WorkspaceFolder) {
 		try {
 			if (workspaceFolder) {
 				// 获取每个工作区的配置文件
@@ -493,15 +523,14 @@ export class TemplateFile {
 				if (!existsSync(templatePath)) {
 					return void 0;
 				}
-				// 避免读取配置时,受require缓存影响
-				delete require.cache[templatePath];
 				// 读取配置文件
-				const templateConfig = require(templatePath);
+				const templateConfig = await importModule(templatePath);
+
 				// 返回配置数据
 				return new TemplatesConfig(templateConfig);
 			} else {
 				// 用对象接,以便读取
-				this.workspaceFolders.forEach((Folder) => {
+				this.workspaceFolders.forEach(async (Folder) => {
 					// 获取每个工作区的配置文件
 					const templatePath = path.normalize(
 						path.resolve(Folder.uri.fsPath, './.config.template')
@@ -509,16 +538,19 @@ export class TemplateFile {
 					// 如果工作区不存在配置文件
 					if (!existsSync(templatePath)) {
 						// 返回系统配置数据
-						return this.getSystemFile();
+						const templateConfig = await this.getSystemFile();
+						// 将配置数据记录下来
+						this.ProjectTemplateConfig[Folder.uri.path] = new TemplatesConfig(
+							templateConfig
+						);
+					} else {
+						// 读取配置文件
+						const templateConfig = await importModule(templatePath);
+						// 将配置数据记录下来
+						this.ProjectTemplateConfig[Folder.uri.path] = new TemplatesConfig(
+							templateConfig
+						);
 					}
-					// 避免读取配置时,受require缓存影响
-					delete require.cache[templatePath];
-					// 读取配置文件
-					const templateConfig = require(templatePath);
-					// 将配置数据记录下来
-					this.ProjectTemplateConfig[Folder.uri.path] = new TemplatesConfig(
-						templateConfig
-					);
 				});
 			}
 		} catch (err: any) {
@@ -547,7 +579,7 @@ export class TemplateFile {
 			if (!existsSync(templatePath)) {
 				workspace.fs.copy(
 					Uri.file(
-						`${__dirname}/../../public/TemplateFileConfig/.config.template`
+						`${__dirname}/../../../public/TemplateFileConfig/.config.template`
 					),
 					Uri.file(`${fspath}/.config.template`)
 				);
@@ -709,7 +741,7 @@ export class TemplateFile {
 	async createFileFromTemplates(workspaceFolder: WorkspaceFolder) {
 		try {
 			// 获取对应工作区的配置
-			let config = this.getProjectFile(workspaceFolder);
+			let config = await this.getProjectFile(workspaceFolder);
 			if (!config) {
 				await this.createTemplate(workspaceFolder.uri.fsPath);
 				config = new TemplatesConfig();

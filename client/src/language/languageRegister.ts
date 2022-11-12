@@ -24,7 +24,7 @@ export const configTemplate = () => {
 						new CompletionItem('template', CompletionItemKind.Class)
 					];
 				} else if (
-					/^(\t|\s|:|;)(\s|\t)+context\.template\.((parent|children\[[0-9]+\])\.)+$/.test(
+					/^(\t|\s|:|;)(\s|\t)*context\.template(\.(parent|children\[[0-9]+\]))*\.$/.test(
 						linePrefix
 					)
 				) {
