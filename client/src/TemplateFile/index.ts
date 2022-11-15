@@ -525,7 +525,6 @@ export class TemplateFile {
 				}
 				// 读取配置文件
 				const templateConfig = await importModule(templatePath);
-
 				// 返回配置数据
 				return new TemplatesConfig(templateConfig);
 			} else {
