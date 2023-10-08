@@ -1,126 +1,48 @@
 {
-	"name": "fast-build",
-	"displayName": "fast-build",
-	"description": "快速构建的工具",
-	"publisher": "lichenghao",
-	"version": "0.0.4",
-	"engines": {
-		"vscode": "^1.69.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:fast-build.createConfigFile",
-		"onCommand:fast-build.create",
-		"onStartupFinished"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/2815261401/fastbuild.git"
-	},
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "fast-build.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "fast-build.create",
-				"title": "(通过模板) 新建文件"
-			},
-			{
-				"command": "fast-build.createConfigFile",
-				"title": "创建构建工具模板文件"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"command": "fast-build.create",
-					"when": "explorerResourceIsFolder",
-					"group": "1_modification"
-				}
-			]
-		},
-		"configuration": {
-			"title": "快速构建工具",
-			"properties": {
-				"fastBuild.delimiter": {
-					"type": "string",
-					"default": " > ",
-					"markdownDescription": "文件路径的分割符,默认是```' > '```"
-				},
-				"fastBuild.ESCBack": {
-					"default": false,
-					"type": "boolean",
-					"markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
-				}
-			}
-		},
-		"languages": [
-			{
-				"id": "config.template",
-				"aliases": [
-					"配置文件"
-				],
-				"extensions": [
-					".config.template"
-				],
-				"filenames": [
-					"jakefile"
-				],
-				"firstLine": "^#!.*\\bnode",
-				"mimetypes": [
-					"text/javascript"
-				],
-				"configuration": "./languages/template.configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "config.template",
-				"scopeName": "source.config.template",
-				"path": "./syntaxes/template.json"
-			}
-		],
-		"snippets": [
-			{
-				"language": "config.template",
-				"path": "./snippets/config.template.code-snippets"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js",
-		"postinstall": "run-s install:*",
-		"install:client": "cd client && npm install"
-	},
-	"dependencies": {
-		"lodash": "^4.17.21"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.2.0",
-		"@types/lodash": "^4.14.182",
-		"@types/mocha": "^9.1.1",
-		"@types/node": "16.x",
-		"@types/vscode": "^1.69.0",
-		"@typescript-eslint/eslint-plugin": "^5.30.0",
-		"@typescript-eslint/parser": "^5.30.0",
-		"@vscode/test-electron": "^2.1.5",
-		"eslint": "^8.18.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
-		"npm-run-all": "^4.1.5",
-		"prettier": "^2.7.1",
-		"typescript": "^4.7.4"
-	}
+  "name": "fastbuild",
+  "displayName": "fastbuild",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "fastbuild.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.83.0",
+    "@types/mocha": "^10.0.2",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2",
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-electron": "^2.3.4"
+  }
 }

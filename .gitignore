@@ -1,5 +1,5 @@
-node_modules
-.history
-package-lock.json
 out
+dist
+node_modules
+.vscode-test/
 *.vsix
