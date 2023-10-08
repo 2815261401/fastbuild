@@ -1,23 +1,70 @@
 {
-  "name": "fastbuild",
-  "displayName": "fastbuild",
-  "description": "",
-  "version": "0.0.1",
+  "name": "fast-build",
+  "displayName": "fast-build",
+  "description": "快速构建的工具",
+  "publisher": "lichenghao",
+  "version": "0.0.5",
+  "preview": true,
   "engines": {
     "vscode": "^1.83.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2815261401/fastbuild.git"
+  },
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "fastbuild.helloWorld",
-        "title": "Hello World"
+        "command": "fast-build.create",
+        "when": "explorerResourceIsFolder",
+        "title": "(通过模板) 新建文件"
+      },
+      {
+        "command": "fast-build.createConfigFile",
+        "title": "创建构建工具模板文件"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "fast-build.create",
+          "when": "explorerResourceIsFolder",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "快速构建工具",
+      "properties": {
+        "fastBuild.configPath": {
+          "type": "string",
+          "default": "template.config.js",
+          "markdownDescription": "配置文件的路径"
+        },
+        "fastBuild.showPath": {
+          "default": false,
+          "type": "boolean",
+          "markdownDescription": "勾选后,模板选择会显示路径。"
+        },
+        "fastBuild.delimiter": {
+          "type": "string",
+          "default": " > ",
+          "markdownDescription": "需要勾选```showPath```文件路径的分割符,默认是```' > '```"
+        },
+        "fastBuild.ESCBack": {
+          "default": false,
+          "type": "boolean",
+          "markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
@@ -28,21 +75,40 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "build": "vsce package",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "xe-utils": "^3.5.13"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.2",
     "@types/vscode": "^1.83.0",
     "@types/mocha": "^10.0.2",
-    "@types/node": "18.x",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.3",
-    "eslint": "^8.50.0",
-    "glob": "^10.3.3",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.51.0",
+    "@vscode/vsce": "^2.21.1",
+    "cz-customizable": "^7.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "generator-code": "^1.7.9",
+    "glob": "^10.3.10",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "mocha": "^10.2.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2",
-    "ts-loader": "^9.4.4",
+    "ts-loader": "^9.5.0",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
-    "@vscode/test-electron": "^2.3.4"
+    "@vscode/test-electron": "^2.3.5"
+  },
+  "config": {
+    "cz-customizable": {
+      "config": ".cz-config.cjs"
+    }
   }
 }

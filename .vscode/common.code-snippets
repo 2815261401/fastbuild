@@ -1,0 +1,7 @@
+{
+  "注释": {
+    "scope": "typescript,javascript",
+    "prefix": "//",
+    "body": ["/** $1 */"]
+  }
+}

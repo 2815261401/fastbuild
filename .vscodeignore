@@ -4,6 +4,7 @@ out/**
 node_modules/**
 src/**
 .gitignore
+.gitattributes
 .yarnrc
 webpack.config.js
 vsc-extension-quickstart.md
@@ -11,3 +12,13 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+
+# custom
+.husky/**
+.editorConfig
+*.cjs
+tsconfig.*
+*.vsix
+pnpm-lock.yaml
+.nvmrc
+.nvmrc
