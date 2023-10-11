@@ -1,6 +1,6 @@
-import * as path from 'path';
+import path from 'path';
 import Mocha from 'mocha';
-import * as glob from 'glob';
+import glob from 'glob';
 
 export function run(): Promise<void> {
   // Create the mocha test
@@ -32,7 +32,6 @@ export function run(): Promise<void> {
           }
         });
       } catch (err) {
-        console.error(err);
         e(err);
       }
     });

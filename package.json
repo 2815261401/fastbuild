@@ -3,8 +3,8 @@
   "displayName": "fast-build",
   "description": "快速构建的工具",
   "publisher": "lichenghao",
-  "version": "0.0.5",
-  "preview": true,
+  "version": "0.0.6",
+  "preview": false,
   "engines": {
     "vscode": "^1.83.0"
   },
@@ -43,25 +43,30 @@
     "configuration": {
       "title": "快速构建工具",
       "properties": {
-        "fastBuild.configPath": {
+        "fast-build.configPath": {
           "type": "string",
           "default": "template.config.js",
           "markdownDescription": "配置文件的路径"
         },
-        "fastBuild.showPath": {
+        "fast-build.showPath": {
           "default": false,
           "type": "boolean",
           "markdownDescription": "勾选后,模板选择会显示路径。"
         },
-        "fastBuild.delimiter": {
+        "fast-build.delimiter": {
           "type": "string",
           "default": " > ",
           "markdownDescription": "需要勾选```showPath```文件路径的分割符,默认是```' > '```"
         },
-        "fastBuild.ESCBack": {
+        "fast-build.ESCBack": {
           "default": false,
           "type": "boolean",
           "markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
+        },
+        "fast-build.showMessage": {
+          "default": true,
+          "type": "boolean",
+          "markdownDescription": "显示警告信息。"
         }
       }
     }

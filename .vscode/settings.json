@@ -16,5 +16,8 @@
     ".gitignore": ".gitattributes",
     "README*": "*.${extname}"
   },
-  "debug.onTaskErrors": "debugAnyway"
+  "debug.onTaskErrors": "debugAnyway",
+  "files.associations": {
+    // "service.template": "typescript"
+  }
 }
