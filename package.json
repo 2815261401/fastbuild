@@ -3,7 +3,7 @@
   "displayName": "fast-build",
   "description": "快速构建的工具",
   "publisher": "lichenghao",
-  "version": "0.0.7",
+  "version": "0.0.6",
   "preview": false,
   "engines": {
     "vscode": "^1.83.0"
@@ -29,12 +29,6 @@
       {
         "command": "fast-build.createConfigFile",
         "title": "创建构建工具模板文件"
-      },
-      {
-        "command": "fast-build.commit",
-        "title": "customizable",
-        "category": "Commitizen",
-        "icon": "public/commitizen-logo.svg"
       }
     ],
     "menus": {
@@ -43,13 +37,6 @@
           "command": "fast-build.create",
           "when": "explorerResourceIsFolder",
           "group": "1_modification"
-        }
-      ],
-      "scm/title": [
-        {
-          "when": "scmProvider == git",
-          "command": "fast-build.commit",
-          "group": "navigation"
         }
       ]
     },
@@ -80,41 +67,6 @@
           "default": true,
           "type": "boolean",
           "markdownDescription": "显示警告信息。"
-        },
-        "fast-build.autoSync": {
-          "type": "boolean",
-          "default": false,
-          "description": "设置为true将自动与git同步提交(push和pull)。"
-        },
-        "fast-build.subjectLength": {
-          "type": "number",
-          "default": 50,
-          "description": "覆盖允许的提交消息主题长度。"
-        },
-        "fast-build.showOutputChannel": {
-          "type": "string",
-          "enum": [
-            "off",
-            "always",
-            "onError"
-          ],
-          "default": "onError",
-          "description": "提交后打开输出面板。"
-        },
-        "fast-build.capitalizeWindowsDriveLetter": {
-          "type": "boolean",
-          "default": false,
-          "description": "设置为true以大写Git工作目录路径中的Windows驱动器号。Git将路径区分大小写，如果驱动器号大小写错误，可能会忽略.gitconfig中的[includeIf]属性。"
-        },
-        "fast-build.useGitRoot": {
-          "type": "boolean",
-          "default": false,
-          "description": "使用git root通过`git rev-parse --show-toplevel`找到.cz-config.js文件"
-        },
-        "fast-build.signCommits": {
-          "type": "boolean",
-          "default": false,
-          "description": "设置为true通过添加-S标志来签署提交"
         }
       }
     }
