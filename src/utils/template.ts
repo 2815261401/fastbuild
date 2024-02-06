@@ -1,16 +1,16 @@
+import { existsSync, statSync } from 'node:fs';
+import { dirname, join, parse } from 'node:path';
 import { FileType, Uri, window, workspace } from 'vscode';
+import each from 'xe-utils/each';
+import entries from 'xe-utils/entries';
+import filter from 'xe-utils/filter';
+import isRegExp from 'xe-utils/isRegExp';
 import map from 'xe-utils/map';
 import merge from 'xe-utils/merge';
 import omit from 'xe-utils/omit';
-import filter from 'xe-utils/filter';
 import some from 'xe-utils/some';
-import isRegExp from 'xe-utils/isRegExp';
-import entries from 'xe-utils/entries';
 import { configuration, conversion, logs, placeholder, placeholderFn } from './config';
 import { catchError, formatStr } from './tool';
-import { dirname, join, parse } from 'node:path/win32';
-import { existsSync, statSync } from 'node:fs';
-import each from 'xe-utils/each';
 
 interface templateConfig {
   name: string;
