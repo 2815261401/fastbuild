@@ -1,5 +1,6 @@
+import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path/win32';
+import { basename, join } from 'node:path';
 import { Uri, WorkspaceFolder, window, workspace } from 'vscode';
 import find from 'xe-utils/find';
 
@@ -57,38 +58,72 @@ class Config {
   set showMessage(value) {
     this.store.update('fast-build.showMessage', value);
   }
+  get autoSync() {
+    return this.store.get<boolean>('fast-build.autoSync') || false;
+  }
+  get subjectLength() {
+    return this.store.get<number>('fast-build.subjectLength') || 50;
+  }
+  get showOutputChannel() {
+    return this.store.get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') || 'onError';
+  }
+  get capitalizeWindowsDriveLetter() {
+    return this.store.get<boolean>('fast-build.capitalizeWindowsDriveLetter') || false;
+  }
+  get useGitRoot() {
+    return this.store.get<boolean>('fast-build.useGitRoot') || false;
+  }
+  get signCommits() {
+    return this.store.get<boolean>('fast-build.signCommits') || false;
+  }
   /** 更新工作区文件夹数据 */
-  async updateWorkspaceFolder(resource?: Uri) {
-    /** 获取全部工作区 */
-    const workspaceFolders = workspace.workspaceFolders;
-    /** 如果存在工作区,进行选择,否则提示 */
-    if (workspaceFolders) {
-      if (resource) {
-        this.targetUri = resource;
-        /** 如果有文件路径,则根据路径匹配 */
-        this.workspaceFolder = find(workspaceFolders, (item: WorkspaceFolder) =>
-          resource.fsPath.includes(item.uri.fsPath)
-        );
-      } else {
-        /** 如果只有一个文件夹,直接匹配 */
-        if (workspaceFolders.length === 1) {
-          this.workspaceFolder = workspaceFolders[0];
-        } else {
-          /** 让用户自己选择 */
-          const workspaceFolder = await window.showQuickPick(
-            workspaceFolders.map((value) => ({ label: value.name, value })),
-            { placeHolder: '请选择执行命令的工作区' }
+  async updateWorkspaceFolder(resource?: Uri | { B: { readonly fsPath: string } }) {
+    if (resource instanceof Uri) {
+      /** 获取全部工作区 */
+      const workspaceFolders = workspace.workspaceFolders;
+      /** 如果存在工作区,进行选择,否则提示 */
+      if (workspaceFolders) {
+        if (resource) {
+          this.targetUri = resource;
+          /** 如果有文件路径,则根据路径匹配 */
+          this.workspaceFolder = find(workspaceFolders, (item: WorkspaceFolder) =>
+            resource.fsPath.includes(item.uri.fsPath)
           );
-          /** 如果选择了工作区 */
-          if (workspaceFolder) {
-            this.workspaceFolder = workspaceFolder.value;
+        } else {
+          /** 如果只有一个文件夹,直接匹配 */
+          if (workspaceFolders.length === 1) {
+            this.workspaceFolder = workspaceFolders[0];
           } else {
-            logs.appendLine('已取消命令!');
+            /** 让用户自己选择 */
+            const workspaceFolder = await window.showQuickPick(
+              workspaceFolders.map((value) => ({ label: value.name, value, description: value.uri.fsPath })),
+              {
+                placeHolder: '请选择工作区',
+                ignoreFocusOut: true,
+                matchOnDescription: true,
+                matchOnDetail: true,
+              }
+            );
+            /** 如果选择了工作区 */
+            if (workspaceFolder) {
+              this.workspaceFolder = workspaceFolder.value;
+            } else {
+              logs.appendLine('已取消选择工作区!');
+            }
           }
         }
+      } else {
+        logs.appendLine('未找到工作区!');
       }
-    } else {
-      logs.appendLine('未找到工作区!');
+    } else if (this.useGitRoot) {
+      const rootFolder = execSync('git rev-parse --show-toplevel', {
+        cwd: resource?.B.fsPath,
+      })
+        .toString()
+        .trim();
+      if (rootFolder) {
+        this.workspaceFolder = { uri: Uri.file(rootFolder), name: basename(rootFolder), index: 0 };
+      }
     }
   }
 }
