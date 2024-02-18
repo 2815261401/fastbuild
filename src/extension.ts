@@ -12,6 +12,7 @@ import {
   createFromTemplate,
   logs,
   readTemplateConfig,
+  rquireFile,
   selectTemplate,
 } from './utils';
 
@@ -105,10 +106,8 @@ export function activate(context: ExtensionContext) {
               }
               /** 获取工作区路径 */
               const cwd = configuration.workspaceFolder.uri.fsPath;
-              /** 读取配置文件内容 */
-              const czConfigStr = (await workspace.fs.readFile(Uri.file(configPath))).toString();
               /** 创建CzConfig对象 */
-              const czConfig: CzConfig = eval(czConfigStr);
+              const czConfig: CzConfig = rquireFile(configPath);
               /** 创建CzCustomizable对象 */
               const czCustomizable = new CzCustomizable(czConfig);
               const message = await czCustomizable.getMessages();

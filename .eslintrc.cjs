@@ -27,7 +27,7 @@ module.exports = {
     'linebreak-style': ['error', 'unix'], // 换行符强制使用lf
     semi: ['error', 'always'], // 强制使用分号结尾
     quotes: ['error', 'single', 'avoid-escape'], // 要求统一使用单引号符号
-    camelcase: ['error', { properties: 'never' }], // 要求使用骆驼拼写法命名约定
+    camelcase: ['error', { properties: 'never', allow: ['__webpack_require__', '__non_webpack_require__'] }], // 要求使用骆驼拼写法命名约定
     'no-console': 'warn', // 禁止出现console
     'no-debugger': 'warn', // 禁止出现debugger
     'no-duplicate-case': 'error', // 禁止出现重复case

@@ -10,7 +10,7 @@ import merge from 'xe-utils/merge';
 import omit from 'xe-utils/omit';
 import some from 'xe-utils/some';
 import { configuration, conversion, logs, placeholder, placeholderFn } from './config';
-import { catchError, formatStr } from './tool';
+import { catchError, formatStr, rquireFile } from './tool';
 
 interface templateConfig {
   name: string;
@@ -85,10 +85,8 @@ export class TemplateConfig {
 /** 读取配置文件 */
 export const readTemplateConfig = async () => {
   try {
-    /** 当前配置文件字符串内容,以达到实时更新 */
-    const conent = await workspace.fs.readFile(configuration.configFileUri);
     /** 将字符串转换为变量 */
-    const config: templateConfig | templateConfig[] = eval(conent.toString());
+    const config: templateConfig | templateConfig[] = rquireFile(configuration.configFileUri.fsPath);
     if (Array.isArray(config)) {
       return map(config, (v) => new TemplateConfig(configuration.workspaceFolder.uri, v));
     }

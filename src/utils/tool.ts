@@ -1,7 +1,7 @@
 import { window } from 'vscode';
-import { configuration, logs } from './config';
-import objectEach from 'xe-utils/objectEach';
 import keys from 'xe-utils/keys';
+import objectEach from 'xe-utils/objectEach';
+import { configuration, logs } from './config';
 
 /**
  * 捕获错误
@@ -88,4 +88,17 @@ export const formatStr = <
   } catch (error) {
     return catchError(error);
   }
+};
+
+declare let __webpack_require__: never;
+declare let __non_webpack_require__: NodeRequire;
+/**
+ * 导入js文件
+ * @param path 文件路径
+ * @returns 导入的数据
+ */
+export const rquireFile = <T>(path: string): T => {
+  const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+  delete requireFunc.cache[path];
+  return requireFunc(path);
 };
