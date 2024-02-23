@@ -1,5 +1,20 @@
 # 变更记录
 
+## [0.0.9]
+
+- 修复读取模板配置文件的错误。
+- 新增创建gitCommit的配置文件。
+- 修复取消提交仍继续执行的bug。
+- 从命令模板移除部分命令。
+
+## [0.0.8]
+
+- 修复读取文件,根目录错误的问题。
+
+## [0.0.7]
+
+- 新增cz-customizable的提交模板,实现方式借鉴了<a href="https://marketplace.visualstudio.com/items?itemName=KnisterPeter.vscode-commitizen">Visual Studio Code Commitizen Support</a>。
+
 ## [0.0.6]
 
 - 采用了webpack打包,减少插件大小,重新整理实现逻辑,方便后续增加新功能。

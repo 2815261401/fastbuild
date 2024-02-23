@@ -78,7 +78,7 @@ class Config {
   }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { B: { readonly fsPath: string } }) {
-    if (resource instanceof Uri) {
+    if (resource instanceof Uri || !resource) {
       /** 获取全部工作区 */
       const workspaceFolders = workspace.workspaceFolders;
       /** 如果存在工作区,进行选择,否则提示 */

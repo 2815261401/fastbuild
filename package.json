@@ -3,7 +3,7 @@
   "displayName": "fast-build",
   "description": "快速构建的工具",
   "publisher": "lichenghao",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "preview": false,
   "engines": {
     "vscode": "^1.83.0"
@@ -28,16 +28,30 @@
       },
       {
         "command": "fast-build.createConfigFile",
-        "title": "创建构建工具模板文件"
+        "title": "快速构建:模板配置文件"
       },
       {
         "command": "fast-build.commit",
         "title": "customizable",
         "category": "Commitizen",
         "icon": "public/commitizen-logo.svg"
+      },
+      {
+        "command": "fast-build.createCommitConfigFile",
+        "title": "快速构建:git配置文件"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "fast-build.create",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.create",
+          "when": "false"
+        }
+      ],
       "explorer/context": [
         {
           "command": "fast-build.create",

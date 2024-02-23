@@ -19,7 +19,7 @@ import {
 export function activate(context: ExtensionContext) {
   configuration.extensionUri = context.extensionUri;
   context.subscriptions.push(
-    ...map(['createConfigFile', 'create', 'commit'], (key) =>
+    ...map(['createConfigFile', 'create', 'commit', 'createCommitConfigFile'], (key) =>
       commands.registerCommand(`fast-build.${key}`, async (resource: Uri) => {
         try {
           /** 获取工作区 */
@@ -106,11 +106,26 @@ export function activate(context: ExtensionContext) {
               }
               /** 获取工作区路径 */
               const cwd = configuration.workspaceFolder.uri.fsPath;
+              /** 获取文件数据 */
+              const czFile: CzConfig | ((config: CzConfig) => CzConfig) | ((config: CzConfig) => Promise<CzConfig>) =
+                rquireFile(configPath);
               /** 创建CzConfig对象 */
-              const czConfig: CzConfig = rquireFile(configPath);
+              let czConfig: CzConfig;
+              /** 如果配置文件是函数,则执行函数获取配置文件 */
+              if (typeof czFile === 'function') {
+                /** 将默认的配置数据传入 */
+                const config: CzConfig = rquireFile(join(__dirname, '../public/.cz-config.cjs'));
+                czConfig = await czFile(config);
+              } else {
+                czConfig = czFile;
+              }
               /** 创建CzCustomizable对象 */
               const czCustomizable = new CzCustomizable(czConfig);
               const message = await czCustomizable.getMessages();
+              /** 如果用户取消提交,则停止执行接下来的代码 */
+              if (message === void 0) {
+                return;
+              }
               /** 是否启用智能提交 */
               const hasSmartCommitEnabled =
                 workspace.getConfiguration('git').get<boolean>('enableSmartCommit') === true;
@@ -149,6 +164,20 @@ export function activate(context: ExtensionContext) {
             } else {
               logs.appendLine('未找到工作区!');
             }
+          } else if (key === 'createCommitConfigFile') {
+            logs.appendLine('开始创建配置文件');
+            const configPath = join(configuration.workspaceFolder.uri.fsPath, '.cz-config.cjs');
+            if (existsSync(configPath)) {
+              const value = await window.showWarningMessage('配置文件已存在,是否覆盖!', '是', '否');
+              if (value === '否') {
+                return;
+              }
+            }
+            /** 读取默认的配置文件,在用户指定文字生成 */
+            workspace.fs.writeFile(
+              Uri.file(configPath),
+              await workspace.fs.readFile(Uri.joinPath(configuration.extensionUri, './public/.cz-config.rem.cjs'))
+            );
           }
         } catch (error) {
           catchError(error);

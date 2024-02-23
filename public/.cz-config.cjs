@@ -446,8 +446,6 @@ const types = Object.entries(type).map(([k, v]) => ({
 
 const typeEnum = types.map(({ value }) => value);
 
-const fs = require('fs');
-const path = require('path');
 /** @type {import('cz-customizable').Options} **/
 module.exports = {
   /**
