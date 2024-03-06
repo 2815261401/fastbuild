@@ -176,7 +176,7 @@ export function activate(context: ExtensionContext) {
             /** 读取默认的配置文件,在用户指定文字生成 */
             workspace.fs.writeFile(
               Uri.file(configPath),
-              await workspace.fs.readFile(Uri.joinPath(configuration.extensionUri, './public/.cz-config.rem.cjs'))
+              await workspace.fs.readFile(Uri.joinPath(configuration.extensionUri, './public/.cz-config.cjs'))
             );
           }
         } catch (error) {

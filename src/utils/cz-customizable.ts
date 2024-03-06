@@ -2,20 +2,24 @@ import execa from 'execa';
 import { window } from 'vscode';
 import { configuration } from './config';
 
+type TypeObj = {
+  /** 描述 */
+  description: string;
+  /** 标题 */
+  title: string;
+  /** 表情代码 */
+  code: string;
+  /** 表情 */
+  emoji: string;
+  /** 表情实体 */
+  entity: string;
+};
 export interface CzConfig {
+  getType?: (k: string, v: TypeObj) => string;
   /** 类型 */
   type?: {
     /** 类型值 */
-    [key: string]: {
-      /** 描述 */
-      description: string;
-      /** 标题 */
-      title: string;
-      /** 表情代码 */
-      code: string;
-      /** 表情 */
-      emoji: string;
-    };
+    [key: string]: TypeObj;
   };
   /** 类型列表 */
   types: {
@@ -83,11 +87,32 @@ export class CzCustomizable {
     /** 如果原始类型存在 */
     if (this.czConfig.type) {
       /** 转换为弹窗选项数组 */
-      return Object.entries(this.czConfig.type).map(([k, v]) => ({
-        label: `[${v.emoji}] ${v.title}`,
-        description: `${v.description}`,
-        value: `${v.emoji} ${k}`,
-      }));
+      return Object.entries(this.czConfig.type).map(([k, v]) => {
+        let value;
+        if (this.czConfig.getType) {
+          value = this.czConfig.getType(k, v);
+        } else {
+          value = configuration.typesFormat.replace(/\$\{(key|code|emoji|entity)\}/g, (str) => {
+            switch (str) {
+              case '${key}':
+                return k;
+              case '${code}':
+                return v.code;
+              case '${emoji}':
+                return v.emoji;
+              case '${entity}':
+                return v.entity;
+              default:
+                return str;
+            }
+          });
+        }
+        return {
+          label: `[${v.emoji}] ${v.title}`,
+          description: `${v.description}`,
+          value,
+        };
+      });
     }
     /** 转换为弹窗选项数组 */
     return this.czConfig.types.map(({ name, value }) => ({
@@ -113,16 +138,24 @@ export class CzCustomizable {
       };
     });
     if (this.czConfig.allowCustomScopes) {
-      scopes.unshift({
-        label: '自定义',
-        description: '自定义',
-        value: 'custom',
-      });
+      scopes.unshift(
+        {
+          label: '[空]',
+          description: '不填写',
+          value: '',
+        },
+        {
+          label: '自定义',
+          description: '自定义',
+          value: 'custom',
+        }
+      );
     }
     return scopes;
   }
   get subjectLimit() {
-    return this.czConfig.subjectLimit ?? 50;
+    const subjectLimit = this.czConfig.subjectLimit ?? 0;
+    return subjectLimit < 1 ? 50 : subjectLimit;
   }
   get question() {
     return {

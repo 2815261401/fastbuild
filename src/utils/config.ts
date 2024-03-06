@@ -76,6 +76,9 @@ class Config {
   get signCommits() {
     return this.store.get<boolean>('fast-build.signCommits') || false;
   }
+  get typesFormat() {
+    return this.store.get<string>('fast-build.typesFormat') || '${key}';
+  }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { B: { readonly fsPath: string } }) {
     if (resource instanceof Uri || !resource) {

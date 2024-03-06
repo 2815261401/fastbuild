@@ -1,5 +1,5 @@
 module.exports = (async () => {
-  const config = await import('./.cz-config.cjs');
+  const config = await import('./public/.cz-config.cjs');
   return {
     parserPreset: {
       parserOpts: {

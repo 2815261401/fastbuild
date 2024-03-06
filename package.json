@@ -3,7 +3,7 @@
   "displayName": "fast-build",
   "description": "快速构建的工具",
   "publisher": "lichenghao",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "preview": false,
   "engines": {
     "vscode": "^1.83.0"
@@ -123,12 +123,17 @@
         "fast-build.useGitRoot": {
           "type": "boolean",
           "default": false,
-          "description": "使用git root通过`git rev-parse --show-toplevel`找到.cz-config.js文件"
+          "description": "使用git root通过`git rev-parse --show-toplevel`找到.cz-config.js文件。"
         },
         "fast-build.signCommits": {
           "type": "boolean",
           "default": false,
           "description": "设置为true通过添加-S标志来签署提交"
+        },
+        "fast-build.typesFormat": {
+          "type": "string",
+          "default": "${key}",
+          "markdownDescription": "commitlint的type格式,默认为```${key}```，即不使用emoji。如果使用了配置文件则不生效。\n \n - ```${key}```为对应的类型\n - ```${code}```为对应类型的emoji编码\n - ```${emoji}```为对应类型的emoji\n - ```${entity}```为对应类型的emoji转义符"
         }
       }
     }
@@ -175,7 +180,7 @@
   },
   "config": {
     "cz-customizable": {
-      "config": ".cz-config.cjs"
+      "config": "./public/.cz-config.cjs"
     }
   }
 }
