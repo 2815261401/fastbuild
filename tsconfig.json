@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
-    "lib": ["ESNext", "dom"],
+    "lib": ["ESNext"],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./", //解析非相对模块的基地址，默认是当前目录
