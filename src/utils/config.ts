@@ -1,86 +1,92 @@
-import { execSync } from 'node:child_process';
+import { RuleField } from '@commitlint/types';
 import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { Uri, WorkspaceFolder, window, workspace } from 'vscode';
+import { Uri, WorkspaceFolder, extensions, window, workspace } from 'vscode';
 import find from 'xe-utils/find';
+import { GitExtension, Repository } from './git';
 
 class Config {
   /** 工作区配置 */
   readonly store = workspace.getConfiguration();
   /** 工作区文件夹 */
   workspaceFolder!: WorkspaceFolder;
+  git: Repository | null = null;
   targetUri!: Uri;
   /** 扩展项目位置 */
   extensionUri!: Uri;
   /** 配置文件位置 */
   get configFileUri() {
     if (this.workspaceFolder) {
-      return Uri.joinPath(this.workspaceFolder.uri, this.configPath);
+      return Uri.joinPath(this.workspaceFolder.uri, this.templateConfigPath);
     }
     return Uri.joinPath(this.extensionUri, './public/template.config.js');
   }
   /** 工作区是否存在配置文件 */
   get hasConfigFile() {
-    return existsSync(join(this.workspaceFolder.uri.fsPath, this.configPath));
+    return existsSync(join(this.workspaceFolder.uri.fsPath, this.templateConfigPath));
   }
   /** 文件路径分割符 */
-  get delimiter() {
-    return this.store.get<string>('fast-build.delimiter') || ' > ';
-  }
-  set delimiter(value) {
-    this.store.update('fast-build.delimiter', value);
+  get templateDelimiter() {
+    return this.store.get<string>('fast-build.templateDelimiter') ?? ' > ';
   }
   /** 是否显示路径 */
-  get showPath() {
-    return this.store.get<boolean>('fast-build.showPath') || false;
-  }
-  set showPath(value) {
-    this.store.update('fast-build.showPath', value);
+  get templateShowPath() {
+    return this.store.get<boolean>('fast-build.templateShowPath') ?? false;
   }
   /** 是否返回上级目录 */
-  get ESCBack() {
-    return this.store.get<boolean>('fast-build.ESCBack') || false;
-  }
-  set ESCBack(value) {
-    this.store.update('fast-build.ESCBack', value);
+  get templateESCBack() {
+    return this.store.get<boolean>('fast-build.templateESCBack') ?? false;
   }
   /** 配置文件的路径 */
-  get configPath() {
-    return this.store.get<string>('fast-build.configPath') || 'template.config.js';
+  get templateConfigPath() {
+    return this.store.get<string>('fast-build.templateConfigPath') ?? 'template.config.js';
   }
-  set configPath(value) {
-    this.store.update('fast-build.configPath', value);
-  }
-  /** 是否显示警告信息 */
-  get showMessage() {
-    return this.store.get<boolean>('fast-build.showMessage') || true;
-  }
-  set showMessage(value) {
-    this.store.update('fast-build.showMessage', value);
-  }
-  get autoSync() {
-    return this.store.get<boolean>('fast-build.autoSync') || false;
-  }
-  get subjectLength() {
-    return this.store.get<number>('fast-build.subjectLength') || 50;
-  }
+  /** 是否显示输出面板 */
   get showOutputChannel() {
-    return this.store.get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') || 'onError';
+    return this.store.get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
   }
-  get capitalizeWindowsDriveLetter() {
-    return this.store.get<boolean>('fast-build.capitalizeWindowsDriveLetter') || false;
+  /** 是否自动推送 */
+  get gitAutoPush() {
+    return this.store.get<boolean>('fast-build.gitAutoPush') ?? true;
   }
-  get useGitRoot() {
-    return this.store.get<boolean>('fast-build.useGitRoot') || false;
+  /** git 提交步骤 */
+  get gitStep() {
+    type GitStep = Record<string, (RuleField | 'gitmoji' | 'breaking' | 'issues')[]>;
+    return (
+      this.store.get<GitStep>('fast-build.gitStep') ?? {
+        default: ['type', 'scope', 'gitmoji', 'subject'],
+        Angluar: ['type', 'scope', 'gitmoji', 'subject', 'body', 'footer'],
+        all: ['type', 'scope', 'gitmoji', 'subject', 'body', 'footer', 'breaking', 'issues'],
+      }
+    );
   }
-  get signCommits() {
-    return this.store.get<boolean>('fast-build.signCommits') || false;
+  #gitRememberStep = '';
+  /** 上次使用步骤 */
+  get gitRememberStep() {
+    return (this.#gitRememberStep || this.store.get<string>('fast-build.gitRememberStep')) ?? '';
   }
-  get typesFormat() {
-    return this.store.get<string>('fast-build.typesFormat') || '${key}';
+  set gitRememberStep(value) {
+    this.#gitRememberStep = value;
+    this.store.update('fast-build.gitRememberStep', value);
+  }
+  /** 可选的作用域 */
+  get gitScopes() {
+    return this.store.get<string[]>('fast-build.gitScopes') ?? [];
+  }
+  set gitScopes(value) {
+    this.store.update('fast-build.gitScopes', value);
+  }
+  /** BREAKING CHANGE 前缀 */
+  get gitBreakingPrefix() {
+    return this.store.get<string>('fast-build.gitBreakingPrefix') ?? 'BREAKING CHANGE: ';
+  }
+  /** 是否自动添加分支名称 */
+  get gitAppendBranchName() {
+    return this.store.get<boolean>('fast-build.gitAppendBranchName') ?? false;
   }
   /** 更新工作区文件夹数据 */
-  async updateWorkspaceFolder(resource?: Uri | { B: { readonly fsPath: string } }) {
+  async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
+    const vscodeGit = extensions.getExtension<GitExtension>('vscode.git')!.exports.getAPI(1);
     if (resource instanceof Uri || !resource) {
       /** 获取全部工作区 */
       const workspaceFolders = workspace.workspaceFolders;
@@ -118,16 +124,10 @@ class Config {
       } else {
         logs.appendLine('未找到工作区!');
       }
-    } else if (this.useGitRoot) {
-      const rootFolder = execSync('git rev-parse --show-toplevel', {
-        cwd: resource?.B.fsPath,
-      })
-        .toString()
-        .trim();
-      if (rootFolder) {
-        this.workspaceFolder = { uri: Uri.file(rootFolder), name: basename(rootFolder), index: 0 };
-      }
+    } else if (resource.id === 'git') {
+      this.workspaceFolder = { uri: resource.rootUri, name: basename(resource.rootUri.fsPath), index: 0 };
     }
+    this.git = vscodeGit.getRepository(this.workspaceFolder.uri);
   }
 }
 export const configuration = new Config();

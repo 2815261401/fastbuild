@@ -10,7 +10,7 @@ import merge from 'xe-utils/merge';
 import omit from 'xe-utils/omit';
 import some from 'xe-utils/some';
 import { configuration, conversion, logs, placeholder, placeholderFn } from './config';
-import { catchError, formatStr, rquireFile } from './tool';
+import { catchError, formatStr, requireFile } from './tool';
 
 interface templateConfig {
   name: string;
@@ -86,7 +86,7 @@ export class TemplateConfig {
 export const readTemplateConfig = async () => {
   try {
     /** 将字符串转换为变量 */
-    const config: templateConfig | templateConfig[] = rquireFile(configuration.configFileUri.fsPath);
+    const config: templateConfig | templateConfig[] = requireFile(configuration.configFileUri.fsPath);
     if (Array.isArray(config)) {
       return map(config, (v) => new TemplateConfig(configuration.workspaceFolder.uri, v));
     }
@@ -169,7 +169,7 @@ export const selectTemplate = async (
           return {
             label: value.alias,
             description: `${type}${
-              configuration.showPath ? value.path.replace('\\', configuration.delimiter) : value.name
+              configuration.templateShowPath ? value.path.replace('\\', configuration.templateDelimiter) : value.name
             }`,
             value,
           };
@@ -178,7 +178,7 @@ export const selectTemplate = async (
       if (selectItem) {
         select = selectItem.value;
       } else {
-        if (configuration.ESCBack) {
+        if (configuration.templateESCBack) {
           /** 配置了ESC返回上一级 */
           return selectTemplate(config, layer - 1, templatesList, selectTemplateItem);
         }

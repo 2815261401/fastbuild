@@ -1,4 +1,3 @@
-import { window } from 'vscode';
 import keys from 'xe-utils/keys';
 import objectEach from 'xe-utils/objectEach';
 import { configuration, logs } from './config';
@@ -15,8 +14,8 @@ export const catchError = (error: unknown) => {
     message = (error as Error).message;
   }
   logs.appendLine(message);
-  if (configuration.showMessage) {
-    window.showErrorMessage(message);
+  if (['onError', 'always'].includes(configuration.showOutputChannel)) {
+    logs.show();
   }
   throw message;
 };
@@ -97,7 +96,7 @@ declare let __non_webpack_require__: NodeRequire;
  * @param path 文件路径
  * @returns 导入的数据
  */
-export const rquireFile = <T>(path: string): T => {
+export const requireFile = <T>(path: string): T => {
   const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
   delete requireFunc.cache[path];
   return requireFunc(path);

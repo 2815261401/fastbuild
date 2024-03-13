@@ -46,7 +46,8 @@ const configs = [
       },
     },
     conversion: {
-      /** 全大写 */ '/upcase': (content) => content.toLocaleUpperCase(),
+      /** 全大写 */
+      '/upcase': (content) => content.toLocaleUpperCase(),
       /** 全小写 */
       '/downcase': (content) => content.toLocaleLowerCase(),
       /** 首字母大写 */

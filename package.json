@@ -3,7 +3,7 @@
   "displayName": "fast-build",
   "description": "快速构建的工具",
   "publisher": "lichenghao",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "preview": false,
   "engines": {
     "vscode": "^1.83.0"
@@ -32,9 +32,12 @@
       },
       {
         "command": "fast-build.commit",
-        "title": "customizable",
+        "title": "约定式提交",
         "category": "Commitizen",
-        "icon": "public/commitizen-logo.svg"
+        "icon": {
+          "light": "public/menu-icon-light.svg",
+          "dark": "public/menu-icon-dark.svg"
+        }
       },
       {
         "command": "fast-build.createCommitConfigFile",
@@ -70,40 +73,25 @@
     "configuration": {
       "title": "快速构建工具",
       "properties": {
-        "fast-build.configPath": {
+        "fast-build.templateConfigPath": {
           "type": "string",
           "default": "template.config.js",
           "markdownDescription": "配置文件的路径"
         },
-        "fast-build.showPath": {
+        "fast-build.templateShowPath": {
           "default": false,
           "type": "boolean",
           "markdownDescription": "勾选后,模板选择会显示路径。"
         },
-        "fast-build.delimiter": {
+        "fast-build.templateDelimiter": {
           "type": "string",
           "default": " > ",
-          "markdownDescription": "需要勾选```showPath```文件路径的分割符,默认是```' > '```"
+          "markdownDescription": "需要勾选```Template Show Path```文件路径的分割符,默认是```' > '```"
         },
-        "fast-build.ESCBack": {
+        "fast-build.templateESCBack": {
           "default": false,
           "type": "boolean",
           "markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
-        },
-        "fast-build.showMessage": {
-          "default": true,
-          "type": "boolean",
-          "markdownDescription": "显示警告信息。"
-        },
-        "fast-build.autoSync": {
-          "type": "boolean",
-          "default": false,
-          "description": "设置为true将自动与git同步提交(push和pull)。"
-        },
-        "fast-build.subjectLength": {
-          "type": "number",
-          "default": 50,
-          "description": "覆盖允许的提交消息主题长度。"
         },
         "fast-build.showOutputChannel": {
           "type": "string",
@@ -113,27 +101,81 @@
             "onError"
           ],
           "default": "onError",
-          "description": "提交后打开输出面板。"
+          "description": "什么时候打开输出面板。"
         },
-        "fast-build.capitalizeWindowsDriveLetter": {
+        "fast-build.gitAutoPush": {
           "type": "boolean",
-          "default": false,
-          "description": "设置为true以大写Git工作目录路径中的Windows驱动器号。Git将路径区分大小写，如果驱动器号大小写错误，可能会忽略.gitconfig中的[includeIf]属性。"
+          "default": true,
+          "description": "设置为true将自动提交。"
         },
-        "fast-build.useGitRoot": {
-          "type": "boolean",
-          "default": false,
-          "description": "使用git root通过`git rev-parse --show-toplevel`找到.cz-config.js文件。"
+        "fast-build.gitStep": {
+          "type": "object",
+          "default": {
+            "default": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject"
+            ],
+            "Angluar": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject",
+              "body",
+              "footer"
+            ],
+            "all": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject",
+              "body",
+              "breaking",
+              "issues"
+            ]
+          },
+          "markdownDescription": "提交消息的步骤，`header`会覆盖`type`,`scope`,`gitmoji`,`subject`,`footer`会覆盖`breaking`,`issues`。",
+          "patternProperties": {
+            ".*": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "header",
+                  "type",
+                  "scope",
+                  "gitmoji",
+                  "subject",
+                  "body",
+                  "footer",
+                  "breaking",
+                  "issues"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false
         },
-        "fast-build.signCommits": {
-          "type": "boolean",
-          "default": false,
-          "description": "设置为true通过添加-S标志来签署提交"
-        },
-        "fast-build.typesFormat": {
+        "fast-build.gitRememberStep": {
           "type": "string",
-          "default": "${key}",
-          "markdownDescription": "commitlint的type格式,默认为```${key}```，即不使用emoji。如果使用了配置文件则不生效。\n \n - ```${key}```为对应的类型\n - ```${code}```为对应类型的emoji编码\n - ```${emoji}```为对应类型的emoji\n - ```${entity}```为对应类型的emoji转义符"
+          "default": "",
+          "markdownDeprecationMessage": "上次使用步骤"
+        },
+        "fast-build.gitScopes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "指定 `scope` 中的可选项。"
+        },
+        "fast-build.gitBreakingPrefix": {
+          "type": "string",
+          "default": "BREAKING CHANGE:",
+          "markdownDescription": "`BREAKING CHANGE`的前缀"
+        },
+        "fast-build.gitAppendBranchName": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "添加分支名称到提交信息"
         }
       }
     }
@@ -149,21 +191,31 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "build": "vsce package",
+    "pre-release": "vsce package --pre-release",
     "prepare": "husky install"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
+    "execa": "^8.0.1",
+    "node-fetch": "^3.3.2",
     "xe-utils": "^3.5.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
-    "@types/vscode": "^1.83.0",
+    "@commitlint/rules": "^19.0.3",
+    "@commitlint/types": "^19.0.3",
+    "@types/conventional-commits-parser": "^5.0.0",
     "@types/mocha": "^10.0.2",
     "@types/node": "16.x",
+    "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "eslint": "^8.51.0",
+    "@vscode/test-electron": "^2.3.5",
     "@vscode/vsce": "^2.21.1",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "conventional-commits-parser": "^5.0.0",
     "cz-customizable": "^7.0.0",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "generator-code": "^1.7.9",
@@ -172,11 +224,10 @@
     "lint-staged": "^14.0.1",
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2",
     "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
-    "@vscode/test-electron": "^2.3.5"
+    "webpack-cli": "^5.1.4"
   },
   "config": {
     "cz-customizable": {
