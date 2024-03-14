@@ -583,10 +583,10 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
         messageObj.issues ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'}${messageObj.issues}` : ''
       }`;
     }
-    if (configuration.gitAppendBranchName) {
-      footer += `\n分支: ${configuration.git?.state.HEAD?.name}`;
-    }
     message += `\n\n${footer}`;
+  }
+  if (configuration.gitAppendBranchName) {
+    message += `\n分支: ${configuration.git?.state.HEAD?.name}`;
   }
   /** 返回命令行列表 */
   return message;
