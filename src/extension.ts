@@ -1,5 +1,3 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { ExtensionContext, Uri, commands, window, workspace } from 'vscode';
 import map from 'xe-utils/map';
 import {
@@ -16,7 +14,7 @@ import {
 export function activate(context: ExtensionContext) {
   configuration.extensionUri = context.extensionUri;
   context.subscriptions.push(
-    ...map(['createConfigFile', 'create', 'commit', 'createCommitConfigFile'], (key) =>
+    ...map(['createConfigFile', 'create', 'commit'], (key) =>
       commands.registerCommand(`fast-build.${key}`, async (resource: Uri) => {
         try {
           /** 获取工作区 */
@@ -74,20 +72,6 @@ export function activate(context: ExtensionContext) {
             } else {
               logs.appendLine('未找到工作区!');
             }
-          } else if (key === 'createCommitConfigFile') {
-            logs.appendLine('开始创建配置文件');
-            const configPath = join(configuration.workspaceFolder.uri.fsPath, '.cz-config.cjs');
-            if (existsSync(configPath)) {
-              const value = await window.showWarningMessage('配置文件已存在,是否覆盖!', '是', '否');
-              if (value === '否') {
-                return;
-              }
-            }
-            /** 读取默认的配置文件,在用户指定文字生成 */
-            workspace.fs.writeFile(
-              Uri.file(configPath),
-              await workspace.fs.readFile(Uri.joinPath(configuration.extensionUri, './public/.cz-config.cjs'))
-            );
           }
         } catch (error) {
           catchError(error);

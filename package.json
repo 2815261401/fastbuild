@@ -38,10 +38,6 @@
           "light": "public/menu-icon-light.svg",
           "dark": "public/menu-icon-dark.svg"
         }
-      },
-      {
-        "command": "fast-build.createCommitConfigFile",
-        "title": "快速构建:git配置文件"
       }
     ],
     "menus": {
