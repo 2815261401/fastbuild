@@ -297,8 +297,10 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
     /** gitmoji */
     async gitmoji(step) {
       try {
+        const lastTime = dayjs(gitmojis.lastTime).add(1, 'day').toDate();
+        const nowTime = dayjs().toDate();
         /** 如果超过一天，则获取最新表情数据 */
-        if (dayjs(gitmojis.lastTime).add(1, 'day').toDate() < dayjs().toDate()) {
+        if (lastTime < nowTime) {
           /** 请求获取表情数据 */
           const data = (await (
             await fetch('https://gitmoji.dev/api/gitmojis', {
