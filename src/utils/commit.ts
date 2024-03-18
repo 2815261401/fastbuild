@@ -12,6 +12,7 @@ import {
   QuickPick,
   QuickPickItem,
   ThemeIcon,
+  Uri,
   commands,
   window,
 } from 'vscode';
@@ -640,6 +641,10 @@ export const commit = async () => {
     }
     configuration.git.inputBox.value = message;
     logs.appendLine(`设置提交信息: ${message}`);
+    commands.executeCommand(
+      'git.stageFile',
+      Uri.joinPath(configuration.workspaceFolder.uri, './.vscode/settings.json')
+    );
     if (configuration.gitAutoPush) {
       logs.appendLine(`开始执行: git commit ${message ?? ''}`);
       commands.executeCommand('git.commit', configuration.git);
