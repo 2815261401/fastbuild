@@ -6,8 +6,6 @@ import find from 'xe-utils/find';
 import { GitExtension, Repository } from './git';
 
 class Config {
-  /** 工作区配置 */
-  readonly store = workspace.getConfiguration();
   /** 工作区文件夹 */
   workspaceFolder!: WorkspaceFolder;
   git: Repository | null = null;
@@ -27,33 +25,33 @@ class Config {
   }
   /** 文件路径分割符 */
   getTemplateDelimiter() {
-    return this.store.get<string>('fast-build.templateDelimiter') ?? ' > ';
+    return workspace.getConfiguration().get<string>('fast-build.templateDelimiter') ?? ' > ';
   }
   /** 是否显示路径 */
   getTemplateShowPath() {
-    return this.store.get<boolean>('fast-build.templateShowPath') ?? false;
+    return workspace.getConfiguration().get<boolean>('fast-build.templateShowPath') ?? false;
   }
   /** 是否返回上级目录 */
   getTemplateESCBack() {
-    return this.store.get<boolean>('fast-build.templateESCBack') ?? false;
+    return workspace.getConfiguration().get<boolean>('fast-build.templateESCBack') ?? false;
   }
   /** 配置文件的路径 */
   getTemplateConfigPath() {
-    return this.store.get<string>('fast-build.templateConfigPath') ?? 'template.config.js';
+    return workspace.getConfiguration().get<string>('fast-build.templateConfigPath') ?? 'template.config.js';
   }
   /** 是否显示输出面板 */
   getShowOutputChannel() {
-    return this.store.get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
+    return workspace.getConfiguration().get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
   }
   /** 是否自动推送 */
   getGitAutoPush() {
-    return this.store.get<boolean>('fast-build.gitAutoPush') ?? true;
+    return workspace.getConfiguration().get<boolean>('fast-build.gitAutoPush') ?? true;
   }
   /** git 提交步骤 */
   getGitStep() {
     type GitStep = Record<string, (RuleField | 'gitmoji' | 'breaking' | 'issues')[]>;
     return (
-      this.store.get<GitStep>('fast-build.gitStep') ?? {
+      workspace.getConfiguration().get<GitStep>('fast-build.gitStep') ?? {
         default: ['type', 'scope', 'gitmoji', 'subject'],
         Angluar: ['type', 'scope', 'gitmoji', 'subject', 'body', 'footer'],
         all: ['type', 'scope', 'gitmoji', 'subject', 'body', 'footer', 'breaking', 'issues'],
@@ -63,30 +61,30 @@ class Config {
   #gitRememberStep = '';
   /** 上次使用步骤 */
   getGitRememberStep() {
-    return (this.#gitRememberStep || this.store.get<string>('fast-build.gitRememberStep')) ?? '';
+    return (this.#gitRememberStep || workspace.getConfiguration().get<string>('fast-build.gitRememberStep')) ?? '';
   }
   setGitRememberStep(value: string) {
     this.#gitRememberStep = value;
-    this.store.update('fast-build.gitRememberStep', value);
+    workspace.getConfiguration().update('fast-build.gitRememberStep', value);
   }
   /** 可选的作用域 */
   getGitScopes() {
-    return this.store.get<string[]>('fast-build.gitScopes') ?? [];
+    return workspace.getConfiguration().get<string[]>('fast-build.gitScopes') ?? [];
   }
   setGitScopes(value: string[]) {
-    this.store.update('fast-build.gitScopes', value);
+    workspace.getConfiguration().update('fast-build.gitScopes', value);
   }
   /** BREAKING CHANGE 前缀 */
   getGitBreakingPrefix() {
-    return this.store.get<string>('fast-build.gitBreakingPrefix') ?? 'BREAKING CHANGE: ';
+    return workspace.getConfiguration().get<string>('fast-build.gitBreakingPrefix') ?? 'BREAKING CHANGE: ';
   }
   /** 是否自动添加分支名称 */
   getGitAppendBranchName() {
-    return this.store.get<boolean>('fast-build.gitAppendBranchName') ?? false;
+    return workspace.getConfiguration().get<boolean>('fast-build.gitAppendBranchName') ?? false;
   }
   /** 命令配置 */
   getCommandConfiguration() {
-    return this.store.get<Record<string, string>>('fast-build.commandConfiguration') ?? {};
+    return workspace.getConfiguration().get<Record<string, string>>('fast-build.commandConfiguration') ?? {};
   }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
