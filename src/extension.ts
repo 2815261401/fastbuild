@@ -22,7 +22,7 @@ export function activate(context: ExtensionContext) {
           /** 创建构建工具模板文件 */
           if (key === 'createConfigFile') {
             /** 如果配置文件已存在 */
-            if (configuration.hasConfigFile) {
+            if (configuration.getHasConfigFile()) {
               const value = await window.showWarningMessage('配置文件已存在,是否覆盖!', '是', '否');
               if (value === '否') {
                 return;
@@ -30,7 +30,7 @@ export function activate(context: ExtensionContext) {
             }
             /** 读取默认的配置文件,在用户指定文字生成 */
             workspace.fs.writeFile(
-              configuration.configFileUri,
+              configuration.getConfigFileUri(),
               await workspace.fs.readFile(Uri.joinPath(configuration.extensionUri, './public/template.config.js'))
             );
           } else if (key === 'create') {
@@ -75,7 +75,7 @@ export function activate(context: ExtensionContext) {
           } else if (key === 'quickCommand') {
             const stat = await workspace.fs.stat(resource);
             const select = await window.showQuickPick(
-              Object.entries(configuration.commandConfiguration)
+              Object.entries(configuration.getCommandConfiguration())
                 .filter(([, value]) => !value.includes(`$${stat.type === 1 ? 'dir' : 'file'}`))
                 .map(([label, value]) => ({
                   label,

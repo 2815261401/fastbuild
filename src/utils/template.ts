@@ -86,7 +86,7 @@ export class TemplateConfig {
 export const readTemplateConfig = async () => {
   try {
     /** 将字符串转换为变量 */
-    const config: templateConfig | templateConfig[] = requireFile(configuration.configFileUri.fsPath);
+    const config: templateConfig | templateConfig[] = requireFile(configuration.getConfigFileUri().fsPath);
     if (Array.isArray(config)) {
       return map(config, (v) => new TemplateConfig(configuration.workspaceFolder.uri, v));
     }
@@ -169,7 +169,9 @@ export const selectTemplate = async (
           return {
             label: value.alias,
             description: `${type}${
-              configuration.templateShowPath ? value.path.replace('\\', configuration.templateDelimiter) : value.name
+              configuration.getTemplateShowPath()
+                ? value.path.replace('\\', configuration.getTemplateDelimiter())
+                : value.name
             }`,
             value,
           };
@@ -178,7 +180,7 @@ export const selectTemplate = async (
       if (selectItem) {
         select = selectItem.value;
       } else {
-        if (configuration.templateESCBack) {
+        if (configuration.getTemplateESCBack()) {
           /** 配置了ESC返回上一级 */
           return selectTemplate(config, layer - 1, templatesList, selectTemplateItem);
         }

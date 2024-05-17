@@ -15,42 +15,42 @@ class Config {
   /** 扩展项目位置 */
   extensionUri!: Uri;
   /** 配置文件位置 */
-  get configFileUri() {
+  getConfigFileUri() {
     if (this.workspaceFolder) {
-      return Uri.joinPath(this.workspaceFolder.uri, this.templateConfigPath);
+      return Uri.joinPath(this.workspaceFolder.uri, this.getTemplateConfigPath());
     }
     return Uri.joinPath(this.extensionUri, './public/template.config.js');
   }
   /** 工作区是否存在配置文件 */
-  get hasConfigFile() {
-    return existsSync(join(this.workspaceFolder.uri.fsPath, this.templateConfigPath));
+  getHasConfigFile() {
+    return existsSync(join(this.workspaceFolder.uri.fsPath, this.getTemplateConfigPath()));
   }
   /** 文件路径分割符 */
-  get templateDelimiter() {
+  getTemplateDelimiter() {
     return this.store.get<string>('fast-build.templateDelimiter') ?? ' > ';
   }
   /** 是否显示路径 */
-  get templateShowPath() {
+  getTemplateShowPath() {
     return this.store.get<boolean>('fast-build.templateShowPath') ?? false;
   }
   /** 是否返回上级目录 */
-  get templateESCBack() {
+  getTemplateESCBack() {
     return this.store.get<boolean>('fast-build.templateESCBack') ?? false;
   }
   /** 配置文件的路径 */
-  get templateConfigPath() {
+  getTemplateConfigPath() {
     return this.store.get<string>('fast-build.templateConfigPath') ?? 'template.config.js';
   }
   /** 是否显示输出面板 */
-  get showOutputChannel() {
+  getShowOutputChannel() {
     return this.store.get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
   }
   /** 是否自动推送 */
-  get gitAutoPush() {
+  getGitAutoPush() {
     return this.store.get<boolean>('fast-build.gitAutoPush') ?? true;
   }
   /** git 提交步骤 */
-  get gitStep() {
+  getGitStep() {
     type GitStep = Record<string, (RuleField | 'gitmoji' | 'breaking' | 'issues')[]>;
     return (
       this.store.get<GitStep>('fast-build.gitStep') ?? {
@@ -62,30 +62,30 @@ class Config {
   }
   #gitRememberStep = '';
   /** 上次使用步骤 */
-  get gitRememberStep() {
+  getGitRememberStep() {
     return (this.#gitRememberStep || this.store.get<string>('fast-build.gitRememberStep')) ?? '';
   }
-  set gitRememberStep(value) {
+  setGitRememberStep(value: string) {
     this.#gitRememberStep = value;
     this.store.update('fast-build.gitRememberStep', value);
   }
   /** 可选的作用域 */
-  get gitScopes() {
+  getGitScopes() {
     return this.store.get<string[]>('fast-build.gitScopes') ?? [];
   }
-  set gitScopes(value) {
+  setGitScopes(value: string[]) {
     this.store.update('fast-build.gitScopes', value);
   }
   /** BREAKING CHANGE 前缀 */
-  get gitBreakingPrefix() {
+  getGitBreakingPrefix() {
     return this.store.get<string>('fast-build.gitBreakingPrefix') ?? 'BREAKING CHANGE: ';
   }
   /** 是否自动添加分支名称 */
-  get gitAppendBranchName() {
+  getGitAppendBranchName() {
     return this.store.get<boolean>('fast-build.gitAppendBranchName') ?? false;
   }
   /** 命令配置 */
-  get commandConfiguration() {
+  getCommandConfiguration() {
     return this.store.get<Record<string, string>>('fast-build.commandConfiguration') ?? {};
   }
   /** 更新工作区文件夹数据 */

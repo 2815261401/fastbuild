@@ -14,7 +14,7 @@ export const catchError = (error: unknown) => {
     message = (error as Error).message;
   }
   logs.appendLine(message);
-  if (['onError', 'always'].includes(configuration.showOutputChannel)) {
+  if (['onError', 'always'].includes(configuration.getShowOutputChannel())) {
     logs.show();
   }
   throw message;

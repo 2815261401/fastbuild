@@ -233,7 +233,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
         }
       }
       items.push(
-        ...configuration.gitScopes.map((label) => ({
+        ...configuration.getGitScopes().map((label) => ({
           label,
           description: '',
           detail: '从工作区配置文件中加载。',
@@ -287,7 +287,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
           () => ''
         );
         if (scope.label === '新作用域' && typeof value === 'string') {
-          configuration.gitScopes = configuration.gitScopes.concat([value]);
+          configuration.setGitScopes(configuration.getGitScopes().concat([value]));
         }
         return value;
       } else if (scope.label === '无') {
@@ -582,13 +582,13 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
       footer = messageObj.footer;
     } else {
       /** 组装提交注脚 */
-      footer = `${messageObj.breaking ? `${configuration.gitBreakingPrefix} ${messageObj.breaking}` : ''}\n${
+      footer = `${messageObj.breaking ? `${configuration.getGitBreakingPrefix()} ${messageObj.breaking}` : ''}\n${
         messageObj.issues ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'}${messageObj.issues}` : ''
       }`;
     }
     message += `\n\n${footer}`;
   }
-  if (configuration.gitAppendBranchName) {
+  if (configuration.getGitAppendBranchName()) {
     message += `\n分支: ${configuration.git?.state.HEAD?.name}`;
   }
   /** 返回命令行列表 */
@@ -615,16 +615,16 @@ export const commit = async () => {
   }
   /** 获取对应步骤 */
   const step = await window.showQuickPick(
-    Object.entries(configuration.gitStep)
+    Object.entries(configuration.getGitStep())
       .map(([label, value]) => ({
         label,
         detail: value.join(','),
-        description: configuration.gitRememberStep === label ? '上次提交使用' : void 0,
+        description: configuration.getGitRememberStep() === label ? '上次提交使用' : void 0,
       }))
       .toSorted((a, b) => {
-        if (a.label === configuration.gitRememberStep) {
+        if (a.label === configuration.getGitRememberStep()) {
           return -1;
-        } else if (b.label === configuration.gitRememberStep) {
+        } else if (b.label === configuration.getGitRememberStep()) {
           return 1;
         }
         return 0;
@@ -635,7 +635,7 @@ export const commit = async () => {
   );
   if (step) {
     /** 获取提交信息 */
-    const message = await getMessages(commitlintConfig, configuration.gitStep[step.label]);
+    const message = await getMessages(commitlintConfig, configuration.getGitStep()[step.label]);
     if (!configuration.git) {
       return;
     }
@@ -645,11 +645,11 @@ export const commit = async () => {
       'git.stageFile',
       Uri.joinPath(configuration.workspaceFolder.uri, './.vscode/settings.json')
     );
-    if (configuration.gitAutoPush) {
+    if (configuration.getGitAutoPush()) {
       logs.appendLine(`开始执行: git commit ${message ?? ''}`);
       commands.executeCommand('git.commit', configuration.git);
     }
-    configuration.gitRememberStep = step.label;
+    configuration.setGitRememberStep(step.label);
   } else {
     throw '取消提交';
   }
