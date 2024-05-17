@@ -38,6 +38,10 @@
           "light": "public/menu-icon-light.svg",
           "dark": "public/menu-icon-dark.svg"
         }
+      },
+      {
+        "command": "fast-build.quickCommand",
+        "title": "快速执行命令"
       }
     ],
     "menus": {
@@ -47,11 +51,15 @@
           "when": "false"
         },
         {
-          "command": "fast-build.create",
+          "command": "fast-build.quickCommand",
           "when": "false"
         }
       ],
       "explorer/context": [
+        {
+          "command": "fast-build.quickCommand",
+          "group": "1_modification"
+        },
         {
           "command": "fast-build.create",
           "when": "explorerResourceIsFolder",
@@ -170,8 +178,15 @@
         },
         "fast-build.gitAppendBranchName": {
           "type": "boolean",
-          "default": true,
-          "markdownDescription": "添加分支名称到提交信息"
+          "default": true
+        },
+        "fast-build.commandConfiguration": {
+          "type": "object",
+          "additionalProperties": "string",
+          "default": {
+            "删除文件夹": "Remove-Item -Force -Path $path"
+          },
+          "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数。"
         }
       }
     }

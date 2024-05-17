@@ -84,6 +84,10 @@ class Config {
   get gitAppendBranchName() {
     return this.store.get<boolean>('fast-build.gitAppendBranchName') ?? false;
   }
+  /** 命令配置 */
+  get commandConfiguration() {
+    return this.store.get<Record<string, string>>('fast-build.commandConfiguration') ?? {};
+  }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
     const vscodeGit = extensions.getExtension<GitExtension>('vscode.git')!.exports.getAPI(1);
