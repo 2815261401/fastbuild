@@ -1,6 +1,5 @@
 import { RuleField } from '@commitlint/types';
-import { existsSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename } from 'node:path';
 import { Uri, WorkspaceFolder, extensions, window, workspace } from 'vscode';
 import find from 'xe-utils/find';
 import { GitExtension, Repository } from './git';
@@ -12,33 +11,6 @@ class Config {
   targetUri!: Uri;
   /** 扩展项目位置 */
   extensionUri!: Uri;
-  /** 配置文件位置 */
-  getConfigFileUri() {
-    if (this.workspaceFolder) {
-      return Uri.joinPath(this.workspaceFolder.uri, this.getTemplateConfigPath());
-    }
-    return Uri.joinPath(this.extensionUri, './public/template.config.js');
-  }
-  /** 工作区是否存在配置文件 */
-  getHasConfigFile() {
-    return existsSync(join(this.workspaceFolder.uri.fsPath, this.getTemplateConfigPath()));
-  }
-  /** 文件路径分割符 */
-  getTemplateDelimiter() {
-    return workspace.getConfiguration().get<string>('fast-build.templateDelimiter') ?? ' > ';
-  }
-  /** 是否显示路径 */
-  getTemplateShowPath() {
-    return workspace.getConfiguration().get<boolean>('fast-build.templateShowPath') ?? false;
-  }
-  /** 是否返回上级目录 */
-  getTemplateESCBack() {
-    return workspace.getConfiguration().get<boolean>('fast-build.templateESCBack') ?? false;
-  }
-  /** 配置文件的路径 */
-  getTemplateConfigPath() {
-    return workspace.getConfiguration().get<string>('fast-build.templateConfigPath') ?? 'template.config.js';
-  }
   /** 是否显示输出面板 */
   getShowOutputChannel() {
     return workspace.getConfiguration().get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';

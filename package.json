@@ -22,13 +22,13 @@
   "contributes": {
     "commands": [
       {
-        "command": "fast-build.create",
-        "when": "explorerResourceIsFolder",
-        "title": "(通过模板) 新建文件"
+        "command": "fast-build.createTemplate",
+        "title": "保存为模板"
       },
       {
-        "command": "fast-build.createConfigFile",
-        "title": "快速构建:模板配置文件"
+        "command": "fast-build.createFile",
+        "when": "explorerResourceIsFolder",
+        "title": "导入模板"
       },
       {
         "command": "fast-build.commit",
@@ -47,7 +47,11 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "fast-build.create",
+          "command": "fast-build.createTemplate",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.createFile",
           "when": "false"
         },
         {
@@ -61,7 +65,11 @@
           "group": "1_modification"
         },
         {
-          "command": "fast-build.create",
+          "command": "fast-build.createTemplate",
+          "group": "1_modification"
+        },
+        {
+          "command": "fast-build.createFile",
           "when": "explorerResourceIsFolder",
           "group": "1_modification"
         }
@@ -77,26 +85,6 @@
     "configuration": {
       "title": "快速构建工具",
       "properties": {
-        "fast-build.templateConfigPath": {
-          "type": "string",
-          "default": "template.config.js",
-          "markdownDescription": "配置文件的路径"
-        },
-        "fast-build.templateShowPath": {
-          "default": false,
-          "type": "boolean",
-          "markdownDescription": "勾选后,模板选择会显示路径。"
-        },
-        "fast-build.templateDelimiter": {
-          "type": "string",
-          "default": " > ",
-          "markdownDescription": "需要勾选```Template Show Path```文件路径的分割符,默认是```' > '```"
-        },
-        "fast-build.templateESCBack": {
-          "default": false,
-          "type": "boolean",
-          "markdownDescription": "勾选后,按键```esc```将返回上级目录,而不是取消选择。"
-        },
         "fast-build.showOutputChannel": {
           "type": "string",
           "enum": [
@@ -184,7 +172,7 @@
           "type": "object",
           "additionalProperties": "string",
           "default": {
-            "删除文件夹": "Remove-Item -Force -Path $path"
+            "快速删除": "Remove-Item -Force -Path $path"
           },
           "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数。"
         }

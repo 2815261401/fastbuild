@@ -606,12 +606,12 @@ export const commit = async () => {
     return;
   }
   /** 获取 commitlint 配置 */
-  let commitlintConfig = requireFile<UserConfig>(join(__dirname, '../commitlint.config.cjs'));
+  let commitlintConfig = await requireFile<UserConfig>(join(__dirname, '../commitlint.config.cjs'));
   /** 获取 commitlint 配置路径 */
   const commitlintPath = join(configuration.workspaceFolder.uri.fsPath, 'commitlint.config.cjs');
   /** 如果存在 commitlint 配置文件 */
   if (existsSync(commitlintPath)) {
-    commitlintConfig = merge(commitlintConfig, requireFile<UserConfig>(commitlintPath));
+    commitlintConfig = merge(commitlintConfig, await requireFile<UserConfig>(commitlintPath));
   }
   /** 获取对应步骤 */
   const step = await window.showQuickPick(

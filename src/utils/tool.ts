@@ -96,7 +96,7 @@ declare let __non_webpack_require__: NodeRequire;
  * @param path 文件路径
  * @returns 导入的数据
  */
-export const requireFile = <T>(path: string): T => {
+export const requireFile = async <T>(path: string): Promise<Awaited<T>> => {
   const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
   delete requireFunc.cache[path];
   return requireFunc(path);
