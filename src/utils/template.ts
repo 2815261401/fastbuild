@@ -30,12 +30,15 @@ export class Template {
   value: Record<string, string>;
   /** 父级文件夹 */
   parent?: Template;
+  /** 所属工作区 */
+  workspaceFolderIndex: number;
   constructor(data: Partial<Template>) {
     this.name = data.name ?? '';
     this.path = data.path ?? '';
     this.type = data.type ?? 1;
     this.value = data.value ?? {};
     this.parent = data.parent;
+    this.workspaceFolderIndex = data.workspaceFolderIndex ?? 0;
   }
   /** 替换方法 */
   replace(str: string) {
@@ -66,22 +69,54 @@ export class Template {
     return Uri.joinPath(resource, basename(path));
   }
 }
+
+/** 获取配置文件的uri */
+export const getConfigUri = async () => {
+  const workspaceFolderIndex = configuration.getTemplateWorkspaceFolder();
+  const workspaceFolders = workspace.workspaceFolders;
+  if (!workspaceFolders) {
+    throw new Error('未找到工作区');
+  }
+  if (workspaceFolderIndex === null && workspaceFolders.length > 1) {
+    const select = await window.showQuickPick(
+      workspaceFolders.map((item, i) => ({
+        label: item.name,
+        description: item.uri.fsPath,
+        value: i,
+      })),
+      {
+        title: '选择配置文件所在工作区',
+        ignoreFocusOut: true,
+      }
+    );
+    if (!select) {
+      throw '取消选择';
+    }
+    configuration.setTemplateWorkspaceFolder(select.value);
+  }
+  return Uri.joinPath(
+    workspaceFolders[configuration.getTemplateWorkspaceFolder() ?? 0].uri,
+    configuration.getTemplateConfigPath()
+  );
+};
 /** 读取配置 */
 export const readConfig = async (): Promise<Template[]> => {
   /** 指定文件路径 */
-  const configPath = Uri.joinPath(configuration.workspaceFolder.uri, '.vscode/template.config.json');
+  const configPath = await getConfigUri();
   /** 文件是否存在 */
   if (existsSync(configPath.fsPath)) {
     /** 存在文件,对数据进行格式化 */
-    const config = JSON.parse((await workspace.fs.readFile(configPath)).toString());
-    return config.map((item: Required<Template>) => new Template(item));
+    const config: Partial<Template>[] = JSON.parse((await workspace.fs.readFile(configPath)).toString() ?? '[]');
+    return config
+      .filter(({ workspaceFolderIndex }) => workspaceFolderIndex === configuration.workspaceFolder.index)
+      .map((item) => new Template(item));
   }
   return [];
 };
 /** 保存配置 */
 export const saveConfig = async (config: Template[]) => {
   /** 指定文件路径 */
-  const configPath = Uri.joinPath(configuration.workspaceFolder.uri, '.vscode/template.config.json');
+  const configPath = await getConfigUri();
   await workspace.fs.writeFile(configPath, Buffer.from(JSON.stringify(config, null, 2)));
   logs.appendLine(`配置已储存,位置在: ${configPath.fsPath}`);
 };
@@ -110,8 +145,7 @@ export const createFile = async (resource: Uri) => {
   /** 读取配置 */
   const config = await readConfig();
   if (!config.length) {
-    window.showInformationMessage('请先配置模板');
-    return;
+    throw '请先配置模板';
   }
   const seletTem = await window.showQuickPick(
     config.map((item) => ({
@@ -122,7 +156,7 @@ export const createFile = async (resource: Uri) => {
     { title: '选择模板', ignoreFocusOut: true }
   );
   if (!seletTem) {
-    return;
+    throw '取消导入模板';
   }
   const data = seletTem.value;
   for (const key of Object.keys(data.value)) {
@@ -131,7 +165,7 @@ export const createFile = async (resource: Uri) => {
       ignoreFocusOut: true,
     });
     if (value === void 0) {
-      return;
+      throw '取消导入模板';
     }
     data.value[key] = value;
   }
@@ -149,7 +183,7 @@ export const createTemplate = async (resource: Uri) => {
   });
   /** 取消 */
   if (name === void 0) {
-    return;
+    throw '取消创建模板';
   }
   /** 获取模板数据 */
   const template = new Template({
@@ -157,6 +191,7 @@ export const createTemplate = async (resource: Uri) => {
     path: relative(configuration.workspaceFolder.uri.fsPath, resource.fsPath),
     type: (await workspace.fs.stat(resource)).type,
     value: {},
+    workspaceFolderIndex: configuration.workspaceFolder.index,
   });
   let index: number | undefined = 0;
   while (index !== void 0) {
@@ -168,7 +203,7 @@ export const createTemplate = async (resource: Uri) => {
       ignoreFocusOut: true,
     });
     if (value === void 0) {
-      return;
+      throw '取消创建模板';
     } else if (value === '') {
       index = void 0;
     } else {

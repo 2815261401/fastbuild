@@ -1,7 +1,6 @@
 import { RuleField } from '@commitlint/types';
 import { basename } from 'node:path';
 import { Uri, WorkspaceFolder, extensions, window, workspace } from 'vscode';
-import find from 'xe-utils/find';
 import { GitExtension, Repository } from './git';
 
 class Config {
@@ -11,6 +10,22 @@ class Config {
   targetUri!: Uri;
   /** 扩展项目位置 */
   extensionUri!: Uri;
+  /** 模板配置所在工作区 */
+  getTemplateWorkspaceFolder() {
+    return workspace.getConfiguration().get<number | null>('fast-build.templateWorkspaceFolder') ?? null;
+  }
+  /** 模板配置所在工作区 */
+  setTemplateWorkspaceFolder(value: number) {
+    workspace.getConfiguration().update('fast-build.templateWorkspaceFolder', value);
+  }
+  /** 模板配置保存位置 */
+  getTemplateConfigPath() {
+    return workspace.getConfiguration().get<string>('fast-build.templateConfigPath') ?? '.vscode/template.config.json';
+  }
+  /** 模板配置保存位置 */
+  setTemplateConfigPath(value: string) {
+    workspace.getConfiguration().update('fast-build.templateConfigPath', value);
+  }
   /** 是否显示输出面板 */
   getShowOutputChannel() {
     return workspace.getConfiguration().get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
@@ -68,9 +83,7 @@ class Config {
         if (resource) {
           this.targetUri = resource;
           /** 如果有文件路径,则根据路径匹配 */
-          this.workspaceFolder = find(workspaceFolders, (item: WorkspaceFolder) =>
-            resource.fsPath.includes(item.uri.fsPath)
-          );
+          this.workspaceFolder = workspace.getWorkspaceFolder(resource) || workspaceFolders[0];
         } else {
           /** 如果只有一个文件夹,直接匹配 */
           if (workspaceFolders.length === 1) {

@@ -85,6 +85,16 @@
     "configuration": {
       "title": "快速构建工具",
       "properties": {
+        "fast-build.templateWorkspaceFolder": {
+          "type": "number",
+          "default": null,
+          "description": "模板配置所在工作区(多个工作区时需要设置)"
+        },
+        "fast-build.templateConfigPath": {
+          "type": "string",
+          "default": ".vscode/template.config.json",
+          "description": "模板配置保存位置"
+        },
         "fast-build.showOutputChannel": {
           "type": "string",
           "enum": [
