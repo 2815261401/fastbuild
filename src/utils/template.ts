@@ -100,7 +100,7 @@ export const getConfigUri = async () => {
   );
 };
 /** 读取配置 */
-export const readConfig = async (): Promise<Template[]> => {
+export const readConfig = async (save = false): Promise<Template[]> => {
   /** 指定文件路径 */
   const configPath = await getConfigUri();
   /** 文件是否存在 */
@@ -108,7 +108,7 @@ export const readConfig = async (): Promise<Template[]> => {
     /** 存在文件,对数据进行格式化 */
     const config: Partial<Template>[] = JSON.parse((await workspace.fs.readFile(configPath)).toString() ?? '[]');
     return config
-      .filter(({ workspaceFolderIndex }) => workspaceFolderIndex === configuration.workspaceFolder.index)
+      .filter(({ workspaceFolderIndex }) => save || workspaceFolderIndex === configuration.workspaceFolder.index)
       .map((item) => new Template(item));
   }
   return [];
@@ -163,6 +163,7 @@ export const createFile = async (resource: Uri) => {
     const value = await window.showInputBox({
       title: `打算把${key}替换为什么`,
       ignoreFocusOut: true,
+      value: data.value[key],
     });
     if (value === void 0) {
       throw '取消导入模板';
@@ -174,7 +175,7 @@ export const createFile = async (resource: Uri) => {
 /** 创建模板 */
 export const createTemplate = async (resource: Uri) => {
   /** 读取配置 */
-  const config = await readConfig();
+  const config = await readConfig(true);
   /** 获取模板名称 */
   const name = await window.showInputBox({
     title: '请输入模板名称',
