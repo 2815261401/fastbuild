@@ -60,7 +60,6 @@ class Config {
   }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
-    const vscodeGit = extensions.getExtension<GitExtension>('vscode.git')!.exports.getAPI(1);
     if (resource instanceof Uri || !resource) {
       /** 获取全部工作区 */
       const workspaceFolders = workspace.workspaceFolders;
@@ -100,8 +99,9 @@ class Config {
       }
     } else if (resource.id === 'git') {
       this.workspaceFolder = { uri: resource.rootUri, name: basename(resource.rootUri.fsPath), index: 0 };
+      const vscodeGit = extensions.getExtension<GitExtension>('vscode.git')!.exports.getAPI(1);
+      this.git = vscodeGit.getRepository(this.workspaceFolder.uri);
     }
-    this.git = vscodeGit.getRepository(this.workspaceFolder.uri);
   }
 }
 export const configuration = new Config();
