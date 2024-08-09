@@ -203,6 +203,7 @@
     "test": "node ./out/test/runTest.js",
     "build": "vsce package",
     "pre-release": "vsce package --pre-release",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -n ./changelog-option.mjs && git add CHANGELOG.md",
     "prepare": "husky"
   },
   "dependencies": {
@@ -221,6 +222,7 @@
     "@types/vscode": "^1.92.0",
     "@vscode/test-electron": "^2.4.1",
     "@vscode/vsce": "^2.31.1",
+    "conventional-changelog-cli": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "conventional-commits-parser": "^6.0.0",
     "cz-customizable": "^7.2.1",
