@@ -1,3 +1,7 @@
+## <small>0.1.3 (2024-08-09)</small>
+
+- feat: ✨重新调整命令 ([c291b0b](https://github.com/2815261401/fastbuild/commit/c291b0b))
+
 ## <small>0.1.2 (2024-06-13)</small>
 
 - 0.1.2 ([733a1c9](https://github.com/2815261401/fastbuild/commit/733a1c9))
