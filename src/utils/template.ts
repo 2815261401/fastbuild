@@ -15,7 +15,9 @@ const conversion = {
     content.replace(/[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) => v.slice(-1).toLocaleUpperCase()),
   /** 帕斯卡命名 */
   '/pascalcase': (content: string) =>
-    content.replace(/^[a-zA-Z0-9]|[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) => v.slice(-1).toLocaleUpperCase()),
+    content.replace(/^[a-zA-Z0-9]|[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) =>
+      v.slice(-1).toLocaleUpperCase(),
+    ),
 };
 
 /** 模板数据 */
@@ -46,9 +48,15 @@ export class Template {
     for (const [key, value] of Object.entries(this.value)) {
       const [regExp, type] = key.split(/ :(?=\/)/);
       if (/^\/.*\/[gims]*$/.test(regExp)) {
-        data = data.replace(eval(regExp), (v) => conversion[type as keyof typeof conversion]?.(v) ?? value ?? v);
+        data = data.replace(
+          eval(regExp),
+          (v) => conversion[type as keyof typeof conversion]?.(v) ?? value ?? v,
+        );
       } else {
-        data = data.replaceAll(regExp, (v) => conversion[type as keyof typeof conversion]?.(v) ?? value ?? v);
+        data = data.replaceAll(
+          regExp,
+          (v) => conversion[type as keyof typeof conversion]?.(v) ?? value ?? v,
+        );
       }
     }
     return data;
@@ -87,7 +95,7 @@ export const getConfigUri = async () => {
       {
         title: '选择配置文件所在工作区',
         ignoreFocusOut: true,
-      }
+      },
     );
     if (!select) {
       throw '取消选择';
@@ -96,7 +104,7 @@ export const getConfigUri = async () => {
   }
   return Uri.joinPath(
     workspaceFolders[configuration.getTemplateWorkspaceFolder() ?? 0].uri,
-    configuration.getTemplateConfigPath()
+    configuration.getTemplateConfigPath(),
   );
 };
 /** 读取配置 */
@@ -106,9 +114,14 @@ export const readConfig = async (save = false): Promise<Template[]> => {
   /** 文件是否存在 */
   if (existsSync(configPath.fsPath)) {
     /** 存在文件,对数据进行格式化 */
-    const config: Partial<Template>[] = JSON.parse((await workspace.fs.readFile(configPath)).toString() ?? '[]');
+    const config: Partial<Template>[] = JSON.parse(
+      (await workspace.fs.readFile(configPath)).toString() ?? '[]',
+    );
     return config
-      .filter(({ workspaceFolderIndex }) => save || workspaceFolderIndex === configuration.workspaceFolder.index)
+      .filter(
+        ({ workspaceFolderIndex }) =>
+          save || workspaceFolderIndex === configuration.workspaceFolder.index,
+      )
       .map((item) => new Template(item));
   }
   return [];
@@ -135,7 +148,7 @@ export const readAndWriteFile = async (template: Template, resource: Uri) => {
     for (const [name, type] of data) {
       await readAndWriteFile(
         new Template({ name, path: name, type, value: template.value, parent: template }),
-        resource
+        resource,
       );
     }
   }
@@ -153,7 +166,7 @@ export const createFile = async (resource: Uri) => {
       description: item.path,
       value: item,
     })),
-    { title: '选择模板', ignoreFocusOut: true }
+    { title: '选择模板', ignoreFocusOut: true },
   );
   if (!seletTem) {
     throw '取消导入模板';

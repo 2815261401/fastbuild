@@ -12,7 +12,9 @@ class Config {
   extensionUri!: Uri;
   /** 模板配置所在工作区 */
   getTemplateWorkspaceFolder() {
-    return workspace.getConfiguration().get<number | null>('fast-build.templateWorkspaceFolder') ?? null;
+    return (
+      workspace.getConfiguration().get<number | null>('fast-build.templateWorkspaceFolder') ?? null
+    );
   }
   /** 模板配置所在工作区 */
   setTemplateWorkspaceFolder(value: number) {
@@ -20,7 +22,10 @@ class Config {
   }
   /** 模板配置保存位置 */
   getTemplateConfigPath() {
-    return workspace.getConfiguration().get<string>('fast-build.templateConfigPath') ?? '.vscode/template.config.json';
+    return (
+      workspace.getConfiguration().get<string>('fast-build.templateConfigPath') ??
+      '.vscode/template.config.json'
+    );
   }
   /** 模板配置保存位置 */
   setTemplateConfigPath(value: string) {
@@ -28,7 +33,11 @@ class Config {
   }
   /** 是否显示输出面板 */
   getShowOutputChannel() {
-    return workspace.getConfiguration().get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError';
+    return (
+      workspace
+        .getConfiguration()
+        .get<'off' | 'always' | 'onError'>('fast-build.showOutputChannel') ?? 'onError'
+    );
   }
   /** 是否自动推送 */
   getGitAutoPush() {
@@ -48,7 +57,11 @@ class Config {
   #gitRememberStep = '';
   /** 上次使用步骤 */
   getGitRememberStep() {
-    return (this.#gitRememberStep || workspace.getConfiguration().get<string>('fast-build.gitRememberStep')) ?? '';
+    return (
+      (this.#gitRememberStep ||
+        workspace.getConfiguration().get<string>('fast-build.gitRememberStep')) ??
+      ''
+    );
   }
   setGitRememberStep(value: string) {
     this.#gitRememberStep = value;
@@ -63,7 +76,10 @@ class Config {
   }
   /** BREAKING CHANGE 前缀 */
   getGitBreakingPrefix() {
-    return workspace.getConfiguration().get<string>('fast-build.gitBreakingPrefix') ?? 'BREAKING CHANGE: ';
+    return (
+      workspace.getConfiguration().get<string>('fast-build.gitBreakingPrefix') ??
+      'BREAKING CHANGE: '
+    );
   }
   /** 是否自动添加分支名称 */
   getGitAppendBranchName() {
@@ -71,7 +87,10 @@ class Config {
   }
   /** 命令配置 */
   getCommandConfiguration() {
-    return workspace.getConfiguration().get<Record<string, string>>('fast-build.commandConfiguration') ?? {};
+    return (
+      workspace.getConfiguration().get<Record<string, string>>('fast-build.commandConfiguration') ??
+      {}
+    );
   }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
@@ -91,13 +110,17 @@ class Config {
           } else {
             /** 让用户自己选择 */
             const workspaceFolder = await window.showQuickPick(
-              workspaceFolders.map((value) => ({ label: value.name, value, description: value.uri.fsPath })),
+              workspaceFolders.map((value) => ({
+                label: value.name,
+                value,
+                description: value.uri.fsPath,
+              })),
               {
                 placeHolder: '请选择工作区',
                 ignoreFocusOut: true,
                 matchOnDescription: true,
                 matchOnDetail: true,
-              }
+              },
             );
             /** 如果选择了工作区 */
             if (workspaceFolder) {
@@ -111,7 +134,11 @@ class Config {
         logs.appendLine('未找到工作区!');
       }
     } else if (resource.id === 'git') {
-      this.workspaceFolder = { uri: resource.rootUri, name: basename(resource.rootUri.fsPath), index: 0 };
+      this.workspaceFolder = {
+        uri: resource.rootUri,
+        name: basename(resource.rootUri.fsPath),
+        index: 0,
+      };
       const vscodeGit = extensions.getExtension<GitExtension>('vscode.git')!.exports.getAPI(1);
       this.git = vscodeGit.getRepository(this.workspaceFolder.uri);
     }
@@ -180,5 +207,7 @@ export const conversion: Record<string, (content: string) => string> = {
     content.replace(/[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) => v.slice(-1).toLocaleUpperCase()),
   /** 帕斯卡命名 */
   '/pascalcase': (content: string) =>
-    content.replace(/^[a-zA-Z0-9]|[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) => v.slice(-1).toLocaleUpperCase()),
+    content.replace(/^[a-zA-Z0-9]|[^a-zA-Z0-9]+[a-zA-Z0-9]/g, (v) =>
+      v.slice(-1).toLocaleUpperCase(),
+    ),
 };

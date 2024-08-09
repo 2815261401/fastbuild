@@ -8,7 +8,19 @@ module.exports = {
     'type-enum': [
       2,
       'always',
-      ['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'],
+      [
+        'build',
+        'chore',
+        'ci',
+        'docs',
+        'feat',
+        'fix',
+        'perf',
+        'refactor',
+        'revert',
+        'style',
+        'test',
+      ],
     ],
     'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
     'subject-empty': [2, 'never'],
@@ -59,7 +71,8 @@ module.exports = {
             title: '依赖调整',
           },
           ci: {
-            description: '对 CI 配置文件和脚本的更改（示例作用域: Travis, Circle, BrowserStack, SauceLabs）',
+            description:
+              '对 CI 配置文件和脚本的更改（示例作用域: Travis, Circle, BrowserStack, SauceLabs）',
             title: '脚本变更',
           },
           chore: {

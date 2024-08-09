@@ -48,7 +48,7 @@ export const formatStr = <
     stringTemplates?: Record<string, string>;
     /** 格式转换函数 */
     conversion?: Record<string, (content: string) => string>;
-  }
+  },
 ) => {
   try {
     /** 设置默认值 */
@@ -80,7 +80,10 @@ export const formatStr = <
             replaceText = (...arr) => arr[Number(num)];
           }
         }
-        return option.placeholder[key](option.contextCb()).replace(RegExp(regex, options), replaceText);
+        return option.placeholder[key](option.contextCb()).replace(
+          RegExp(regex, options),
+          replaceText,
+        );
       });
     }
     return value.replace('\\$', '$');

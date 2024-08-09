@@ -1,5 +1,11 @@
 import rules from '@commitlint/rules';
-import { PromptConfig, RuleConfigCondition, RuleConfigSeverity, RuleField, UserConfig } from '@commitlint/types';
+import {
+  PromptConfig,
+  RuleConfigCondition,
+  RuleConfigSeverity,
+  RuleField,
+  UserConfig,
+} from '@commitlint/types';
 import { Commit } from 'conventional-commits-parser';
 import dayjs from 'dayjs';
 import { existsSync, writeFileSync } from 'fs';
@@ -25,7 +31,9 @@ type QuickPickOptions<T> = {
   [R in keyof T]?: T[R];
 };
 /** 展示选择框 */
-const showQuickPick = (options: QuickPickOptions<QuickPick<QuickPickItem>>): Promise<QuickPickItem | false> =>
+const showQuickPick = (
+  options: QuickPickOptions<QuickPick<QuickPickItem>>,
+): Promise<QuickPickItem | false> =>
   new Promise((resolve) => {
     const picker = window.createQuickPick();
     if (options.placeholder) {
@@ -69,7 +77,7 @@ const showQuickPick = (options: QuickPickOptions<QuickPick<QuickPickItem>>): Pro
 /** 展示输入框 */
 const showInputBox = (
   options: QuickPickOptions<InputBox>,
-  validate: (value: string) => string | Promise<string>
+  validate: (value: string) => string | Promise<string>,
 ): Promise<string | false | undefined> =>
   new Promise((resolve) => {
     /** 创建输入框弹窗 */
@@ -135,14 +143,20 @@ const vscodeButton: Record<'left' | 'right' | 'confirm', QuickInputButton> = {
   },
 };
 /** 获取消息 */
-const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gitmoji' | 'breaking' | 'issues')[]) => {
+const getMessages = async (
+  commitlintConfig: UserConfig,
+  steps: (RuleField | 'gitmoji' | 'breaking' | 'issues')[],
+) => {
   /** 获取配置描述 */
   const options: PromptConfig['questions'] = commitlintConfig.prompt?.questions ?? {};
   type InferArrayItem<T> = T extends (infer R)[] ? R : T;
   /** 获取步骤数 */
   const totalSteps = steps.length;
   /** 根据不同类型设置不同获取方法 */
-  const config: Record<InferArrayItem<typeof steps>, (step: number) => Promise<string | false | undefined>> = {
+  const config: Record<
+    InferArrayItem<typeof steps>,
+    (step: number) => Promise<string | false | undefined>
+  > = {
     /** 标题 */
     async header(step) {
       const header = await showInputBox(
@@ -163,7 +177,11 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                 return total;
               }
               /** 获取对应规则 */
-              const data = (commitlintConfig.rules[key] ?? []) as [number, RuleConfigCondition, undefined];
+              const data = (commitlintConfig.rules[key] ?? []) as [
+                number,
+                RuleConfigCondition,
+                undefined,
+              ];
               /** 解构获取对应数据 */
               const [level, condition, value] = data;
               /** 如果等级不是错误等级 */
@@ -176,7 +194,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                   header: v,
                 } as Commit,
                 condition,
-                value
+                value,
               );
               /** 如果验证通过 */
               if (validate || !message) {
@@ -185,7 +203,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               /** 返回错误信息 */
               return total.concat([message]);
             }, [] as string[])
-            .join(',')
+            .join(','),
       );
       return header;
     },
@@ -228,7 +246,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               label,
               description: '',
               detail: '从 commitlint 配置文件中加载。',
-            }))
+            })),
           );
         }
       }
@@ -237,7 +255,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
           label,
           description: '',
           detail: '从工作区配置文件中加载。',
-        }))
+        })),
       );
       /** 获取作用域 */
       const scope = await showQuickPick({
@@ -284,7 +302,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
             ]),
           },
-          () => ''
+          () => '',
         );
         if (scope.label === '新作用域' && typeof value === 'string') {
           configuration.setGitScopes(configuration.getGitScopes().concat([value]));
@@ -322,7 +340,10 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
           /** 更新缓存时间 */
           gitmojis.lastTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
           /** 写入缓存 */
-          writeFileSync(join(__dirname, '../public/gitmojis.json'), JSON.stringify(gitmojis, null, 2));
+          writeFileSync(
+            join(__dirname, '../public/gitmojis.json'),
+            JSON.stringify(gitmojis, null, 2),
+          );
         }
       } catch (error) {
         /** 记录错误 */
@@ -348,7 +369,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               description: item.description,
               detail: item.code,
             };
-          })
+          }),
         ),
         buttons: (step > 1 ? [vscodeButton.left] : []).concat([
           step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
@@ -383,7 +404,11 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                 return total;
               }
               /** 获取对应规则 */
-              const data = (commitlintConfig.rules[key] ?? []) as [number, RuleConfigCondition, undefined];
+              const data = (commitlintConfig.rules[key] ?? []) as [
+                number,
+                RuleConfigCondition,
+                undefined,
+              ];
               /** 解构获取对应数据 */
               const [level, condition, value] = data;
               /** 如果等级不是错误等级 */
@@ -396,7 +421,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                   subject: v,
                 } as Commit,
                 condition,
-                value
+                value,
               );
               /** 如果验证通过 */
               if (validate || !message) {
@@ -405,7 +430,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               /** 返回错误信息 */
               return total.concat([message]);
             }, [] as string[])
-            .join(',')
+            .join(','),
       );
       return subject;
     },
@@ -430,7 +455,11 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                 return total;
               }
               /** 获取对应规则 */
-              const data = (commitlintConfig.rules[key] ?? []) as [number, RuleConfigCondition, undefined];
+              const data = (commitlintConfig.rules[key] ?? []) as [
+                number,
+                RuleConfigCondition,
+                undefined,
+              ];
               /** 解构获取对应数据 */
               const [level, condition, value] = data;
               /** 如果等级不是错误等级 */
@@ -443,7 +472,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                   body: v,
                 } as Commit,
                 condition,
-                value
+                value,
               );
               /** 如果验证通过 */
               if (validate || !message) {
@@ -452,7 +481,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               /** 返回错误信息 */
               return total.concat([message]);
             }, [] as string[])
-            .join(',')
+            .join(','),
       );
       return body;
     },
@@ -477,7 +506,11 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                 return total;
               }
               /** 获取对应规则 */
-              const data = (commitlintConfig.rules[key] ?? []) as [number, RuleConfigCondition, undefined];
+              const data = (commitlintConfig.rules[key] ?? []) as [
+                number,
+                RuleConfigCondition,
+                undefined,
+              ];
               /** 解构获取对应数据 */
               const [level, condition, value] = data;
               /** 如果等级不是错误等级 */
@@ -490,7 +523,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
                   footer: v,
                 } as Commit,
                 condition,
-                value
+                value,
               );
               /** 如果验证通过 */
               if (validate || !message) {
@@ -499,7 +532,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
               /** 返回错误信息 */
               return total.concat([message]);
             }, [] as string[])
-            .join(',')
+            .join(','),
       );
       return footer;
     },
@@ -514,7 +547,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
         },
-        () => ''
+        () => '',
       );
       return breaking;
     },
@@ -529,7 +562,7 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
         },
-        () => ''
+        () => '',
       );
       return issues;
     },
@@ -583,7 +616,9 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
     } else {
       /** 组装提交注脚 */
       footer = `${messageObj.breaking ? `${configuration.getGitBreakingPrefix()} ${messageObj.breaking}` : ''}\n${
-        messageObj.issues ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'}${messageObj.issues}` : ''
+        messageObj.issues
+          ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'}${messageObj.issues}`
+          : ''
       }`;
     }
     message += `\n\n${footer}`;
@@ -598,7 +633,8 @@ const getMessages = async (commitlintConfig: UserConfig, steps: (RuleField | 'gi
 export const commit = async () => {
   /** 是否可提交 */
   const canCommit =
-    (configuration.git?.state.workingTreeChanges.length ?? 0) + (configuration.git?.state.indexChanges.length ?? 0);
+    (configuration.git?.state.workingTreeChanges.length ?? 0) +
+    (configuration.git?.state.indexChanges.length ?? 0);
   /** 如果不能提交 */
   if (!canCommit) {
     logs.appendLine('未找到可提交的代码!');
@@ -631,7 +667,7 @@ export const commit = async () => {
       }),
     {
       placeHolder: '请选择步骤',
-    }
+    },
   );
   if (step) {
     /** 获取提交信息 */
@@ -643,7 +679,7 @@ export const commit = async () => {
     logs.appendLine(`设置提交信息: ${message}`);
     commands.executeCommand(
       'git.stageFile',
-      Uri.joinPath(configuration.workspaceFolder.uri, './.vscode/settings.json')
+      Uri.joinPath(configuration.workspaceFolder.uri, './.vscode/settings.json'),
     );
     if (configuration.getGitAutoPush()) {
       logs.appendLine(`开始执行: git commit ${message ?? ''}`);
