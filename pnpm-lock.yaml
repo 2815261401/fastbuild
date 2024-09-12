@@ -55,8 +55,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       conventional-commits-parser:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^5.0.0
+        version: 5.0.0
       cz-customizable:
         specifier: ^7.2.1
         version: 7.2.1
