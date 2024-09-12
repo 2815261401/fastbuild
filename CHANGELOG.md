@@ -1,3 +1,9 @@
+## <small>0.1.4 (2024-09-12)</small>
+
+- feat: 🐛修复commit格式错误 ([9f15898](https://github.com/2815261401/fastbuild/commit/9f15898))
+- fix: 🐛修复更新版本导致的打包错误 ([539c6f5](https://github.com/2815261401/fastbuild/commit/539c6f5))
+- fix: 🐛修复工作区快速命令启动文件夹位置,修复上次使用步骤警告问题,添加快速命令终端上限 ([e8254bc](https://github.com/2815261401/fastbuild/commit/e8254bc))
+
 ## <small>0.1.3 (2024-08-09)</small>
 
 - feat: ✨重新调整命令 ([c291b0b](https://github.com/2815261401/fastbuild/commit/c291b0b))
