@@ -92,6 +92,16 @@ class Config {
       {}
     );
   }
+  /** 命令终端数量 */
+  getCommandTerminalsNumber() {
+    const number = Number(
+      workspace.getConfiguration().get<number>('fast-build.commandTerminalsNumber') ?? 1,
+    );
+    if (number >= 1) {
+      return number - 1;
+    }
+    return 0;
+  }
   /** 更新工作区文件夹数据 */
   async updateWorkspaceFolder(resource?: Uri | { id: string; rootUri: Uri }) {
     if (resource instanceof Uri || !resource) {

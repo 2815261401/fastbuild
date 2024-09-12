@@ -162,7 +162,7 @@
         "fast-build.gitRememberStep": {
           "type": "string",
           "default": "",
-          "markdownDeprecationMessage": "上次使用步骤"
+          "markdownDescription": "上次使用步骤"
         },
         "fast-build.gitScopes": {
           "type": "array",
@@ -187,6 +187,12 @@
             "强制删除(git bash)": "(bash)rm -rf $path"
           },
           "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数,`(bash)`将使用git bash执行命令。"
+        },
+        "fast-build.commandTerminalsNumber": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
         }
       }
     }

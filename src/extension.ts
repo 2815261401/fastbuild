@@ -49,12 +49,18 @@ export async function activate(context: ExtensionContext) {
             });
             if (select?.value) {
               const shellPath = select?.value.startsWith('(bash)')
-                ? join(execSync('where git').toString(), '../../bin/bash.exe')
+                ? join(execSync('where git').toString(), '../../bin/bash.exe') || void 0
                 : void 0;
-              const name = `快速命令${shellPath ? '(bash)' : ''}`;
-              const pw =
-                window.terminals.find((v) => v.name === name) ||
-                window.createTerminal({ name, shellPath, isTransient: true });
+              const list = window.terminals.filter((v) => /^快速命令(-[123])?$/.test(v.name));
+              const index = list.length;
+              let name = `快速命令${index ? `-${index}` : ''}`;
+              if (index > configuration.getCommandTerminalsNumber()) {
+                name = '快速命令';
+                list.forEach((v) => {
+                  v.dispose();
+                });
+              }
+              const pw = window.createTerminal({ name, shellPath, isTransient: true });
               pw.show();
               const fixedParameter = {
                 path: resource.fsPath,
