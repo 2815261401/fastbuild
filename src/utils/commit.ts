@@ -617,7 +617,7 @@ const getMessages = async (
       /** 组装提交注脚 */
       footer = `${messageObj.breaking ? `${configuration.getGitBreakingPrefix()} ${messageObj.breaking}` : ''}\n${
         messageObj.issues
-          ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'}${messageObj.issues}`
+          ? `${messageObj.issues.includes(',') ? 'Closes' : 'Close'} ${messageObj.issues}`
           : ''
       }`;
     }
