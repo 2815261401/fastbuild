@@ -1,34 +1,33 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    /** 使用增量编译，提高后续编译速度 */
+    "incremental": true,
+    /** 输出目标版本 */
     "target": "ESNext",
+    /** 需要引用的库 */
     "lib": ["ESNext"],
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./", //解析非相对模块的基地址，默认是当前目录
-    "paths": {
-      "@/*": ["src/*"]
-    },
+    /** 模块导入的基准路径 */
+    "baseUrl": "./",
+    /** 模块类型 */
+    "module": "ESNext",
+
+    /** 以node的形式解析模块 */
+    "moduleResolution": "Node",
+    /** 允许直接导入 .json 文件 */
+    "resolveJsonModule": true,
+    /** 禁止导入 TypeScript 扩展名的文件 */
+    "allowImportingTsExtensions": false,
+    /** 允许编译javascript文件 */
+    "allowJs": false,
+    /** 严格模式 */
     "strict": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true, //允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查
-    "declaration": false, // 生成相应的d.ts文件
-    // "declarationDir": "dist/types", // 生成声明文件的输出路径
-    "emitDecoratorMetadata": true, // 允许添加修饰器元数据
-    "experimentalDecorators": true, // 允许使用修饰器
-    "esModuleInterop": true, // 允许export=导出，由import from 导入
-    "incremental": true, // TS编译器在第一次编译之后会生成一个存储编译信息的文件，第二次编译会在第一次的基础上进行增量编译，可以提高编译的速度
-    "listFiles": false, // 打印编译的文件(包括引用的声明文件)
-    "noImplicitThis": true, // 不允许不明确类型的this
-    "noImplicitAny": true, // 不允许隐式any类型
-    "noImplicitReturns": true, // 检查函数没有隐式的返回值
-    "noUnusedLocals": true, // 检查未使用的局部变量
-    "noUnusedParameters": true, // 检查未使用的参数
-    "noFallthroughCasesInSwitch": true, // 检查switch语句包含正确的break
-    "resolveJsonModule": true, // 允许导入json
-    "removeComments": true // 是否删除编译后的js注释"strictNullChecks": true, // 不允许把null、undefined赋值给其他类型的变量
-  },
-  "types": [],
-  "include": ["src/**/*.ts", "types/**/*.d.ts", "test/**/*.ts"],
-  "exclude": ["node_modules", "dist", "out"]
+    /** 允许隐式的 any 类型 */
+    "noImplicitAny": false,
+    /** 生成 sourcemap */
+    "sourceMap": true,
+    /** 允许从没有设置默认导出的模块中默认导入 */
+    "allowSyntheticDefaultImports": true,
+    /** 使 CommonJS 和 ES 模块能够更无缝地一起工作 */
+    "esModuleInterop": true
+  }
 }

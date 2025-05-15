@@ -16,8 +16,8 @@ vsc-extension-quickstart.md
 # custom
 .husky/**
 .editorConfig
-*.cjs
-!commitlint.config.cjs
+*.js
+!commitlint.config.js
 tsconfig.*
 *.vsix
 pnpm-lock.yaml

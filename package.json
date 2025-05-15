@@ -1,24 +1,25 @@
 {
+  "publisher": "lichenghao",
   "name": "fast-build",
   "displayName": "fast-build",
-  "description": "快速构建的工具",
-  "publisher": "lichenghao",
+  "type": "module",
   "version": "0.1.4",
+  "description": "快速构建的工具",
   "preview": false,
-  "engines": {
-    "vscode": "^1.83.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/2815261401/fastbuild.git"
   },
-  "main": "./dist/extension.js",
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.cjs",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
@@ -214,38 +215,35 @@
   },
   "dependencies": {
     "dayjs": "^1.11.13",
-    "execa": "^9.3.1",
+    "execa": "^9.5.3",
     "node-fetch": "^3.3.2",
     "xe-utils": "^3.5.30"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/rules": "^19.5.0",
-    "@commitlint/types": "^19.5.0",
-    "@types/conventional-commits-parser": "^5.0.0",
-    "@types/mocha": "^10.0.7",
-    "@types/node": "22.5.4",
-    "@types/vscode": "^1.83.0",
-    "@vscode/test-electron": "^2.4.1",
-    "@vscode/vsce": "^3.1.0",
+    "@antfu/eslint-config": "4.13.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/rules": "^19.8.1",
+    "@commitlint/types": "^19.8.1",
+    "@types/conventional-commits-parser": "^5.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.15.18",
+    "@types/vscode": "1.83.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.3.2",
     "conventional-changelog-cli": "^5.0.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
-    "conventional-commits-parser": "^5.0.0",
-    "cz-customizable": "^7.2.1",
-    "eslint": "^9.10.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "generator-code": "^1.11.2",
-    "glob": "^11.0.0",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "mocha": "^10.7.3",
-    "prettier": "^3.3.3",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.5.0",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "conventional-commits-parser": "^6.1.0",
+    "cz-customizable": "^7.4.0",
+    "eslint": "^9.26.0",
+    "eslint-plugin-format": "^1.0.1",
+    "generator-code": "^1.11.9",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
+    "mocha": "^11.2.2",
+    "ts-loader": "^9.5.2s",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.8",
+    "webpack-cli": "^6.0.1"
   },
   "config": {
     "cz-customizable": {

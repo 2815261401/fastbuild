@@ -20,8 +20,5 @@
   "files.associations": {
     // "service.template": "typescript"
   },
-  "fast-build.gitRememberStep": "all",
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "fast-build.gitRememberStep": "all"
 }
