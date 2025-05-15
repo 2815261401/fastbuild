@@ -1,3 +1,21 @@
+# 更新日志
+
+## [0.1.5](https://github.com/2815261401/fastbuild/compare/v0.1.4...v0.1.5) (2025-05-15)
+
+### ⚠ BREAKING CHANGES
+
+* 模板正则调整匹配规则
+
+分支: master
+
+### 🎫 Chores | 其他更新
+
+* ✨使用 release-it 进行版本控制 ([0a1626e](https://github.com/2815261401/fastbuild/commit/0a1626eadd1e47a54d4fdb2a7462db225460d699))
+
+### ♻️ Code Refactoring | 代码重构
+
+* 🚨调整eslint配置, 配置文件采用esm格式, 重构模板相关模块 ([b20883f](https://github.com/2815261401/fastbuild/commit/b20883f33e73b139201e6de572ac70bac87df2ec))
+
 ## <small>0.1.4 (2024-09-12)</small>
 
 - feat: 🐛修复commit格式错误 ([9f15898](https://github.com/2815261401/fastbuild/commit/9f15898))

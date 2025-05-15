@@ -3,7 +3,7 @@
   "name": "fast-build",
   "displayName": "fast-build",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "快速构建的工具",
   "preview": false,
   "repository": {
