@@ -1,3 +1,5 @@
+packages:
+  - release-it/*
 onlyBuiltDependencies:
   - '@vscode/vsce-sign'
   - keytar

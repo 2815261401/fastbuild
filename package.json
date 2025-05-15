@@ -210,7 +210,7 @@
     "test": "node ./out/test/runTest.js",
     "build": "vsce package",
     "pre-release": "vsce package --pre-release",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -n ./changelog-option.mjs && git add CHANGELOG.md",
+    "release": "release-it",
     "prepare": "husky"
   },
   "dependencies": {
@@ -224,6 +224,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/rules": "^19.8.1",
     "@commitlint/types": "^19.8.1",
+    "@release-it/custom-conventional-changelog": "workspace:*",
     "@types/conventional-commits-parser": "^5.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.15.18",
