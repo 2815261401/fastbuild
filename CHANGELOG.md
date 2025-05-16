@@ -1,5 +1,11 @@
 # 更新日志
 
+## [0.1.6](https://github.com/2815261401/fastbuild/compare/v0.1.5...v0.1.6) (2025-05-16)
+
+### ✨ Features | 新功能
+
+* ✨约定式提交返回上一步保留默认值 ([a280123](https://github.com/2815261401/fastbuild/commit/a28012321362efbf292872f9fba0dd73ab68f6a2))
+
 ## [0.1.5](https://github.com/2815261401/fastbuild/compare/v0.1.4...v0.1.5) (2025-05-15)
 
 ### ⚠ BREAKING CHANGES
