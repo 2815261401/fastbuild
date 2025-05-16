@@ -33,27 +33,39 @@ const vscodeButton: Record<'left' | 'right' | 'confirm', QuickInputButton> = {
 /** 展示选择框 */
 function showQuickPick(options: QuickPickOptions<QuickPick<QuickPickItem>>): Promise<QuickPickItem | false> {
   return new Promise((resolve) => {
+    /** 创建选择框 */
     const picker = window.createQuickPick()
+    /** 设置占位符 */
     if (options.placeholder) {
       picker.placeholder = options.placeholder
     }
+    /** 匹配description */
     picker.matchOnDescription = true
+    /** 匹配detail */
     picker.matchOnDetail = true
+    /** 忽略失去焦点 */
     picker.ignoreFocusOut = true
+    /** 设置选项 */
     if (options.items?.length) {
       picker.items = options.items
-      picker.activeItems = [options.items[0]]
+      /** 默认选中 */
+      picker.activeItems = options.items.filter(item => item.label === options.value) ?? [options.items[0]]
     }
+    /** 设置步数 */
     if (options.step) {
       picker.step = options.step
     }
+    /** 设置总步数 */
     if (options.totalSteps) {
       picker.totalSteps = options.totalSteps
     }
+    /** 设置按钮 */
     if (options.buttons) {
       picker.buttons = options.buttons
     }
+    /** 显示选择框 */
     picker.show()
+    /** 监听选择 */
     picker.onDidAccept(() => {
       resolve(picker.selectedItems[0] ?? picker.activeItems[0] ?? picker.items[0])
       picker.dispose()
@@ -80,6 +92,8 @@ function showInputBox(options: QuickPickOptions<InputBox>, validate: (value: str
   return new Promise((resolve) => {
     /** 创建输入框弹窗 */
     const input = window.createInputBox()
+    /** 设置输入框值 */
+    input.value = options.value!
     /** 设置占位符 */
     if (options.placeholder) {
       input.placeholder = options.placeholder
@@ -137,6 +151,8 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
   type InferArrayItem<T> = T extends (infer R)[] ? R : T
   /** 获取步骤数 */
   const totalSteps = steps.length
+  /** 存储值 */
+  const valueMap = new Map()
   /** 根据不同类型设置不同获取方法 */
   const config: Record<
     InferArrayItem<typeof steps>,
@@ -152,6 +168,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('header'),
         },
         v =>
           Object.keys(commitlintConfig.rules ?? {})
@@ -209,6 +226,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
         buttons: (step > 1 ? [vscodeButton.left] : []).concat([
           step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
         ]),
+        value: valueMap.get('type'),
       })
       /** 如果取消 */
       if (typeof type === 'boolean') {
@@ -271,6 +289,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
         buttons: (step > 1 ? [vscodeButton.left] : []).concat([
           step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
         ]),
+        value: valueMap.get('scope'),
       })
       /** 如果取消 */
       if (typeof scope === 'boolean') {
@@ -361,6 +380,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
         buttons: (step > 1 ? [vscodeButton.left] : []).concat([
           step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
         ]),
+        value: valueMap.get('gitmoji'),
       })
       /** 如果取消 */
       if (typeof gitmoji === 'boolean') {
@@ -382,6 +402,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('subject'),
         },
         v =>
           Object.keys(commitlintConfig.rules ?? {})
@@ -433,6 +454,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('body'),
         },
         v =>
           Object.keys(commitlintConfig.rules ?? {})
@@ -484,6 +506,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('footer'),
         },
         v =>
           Object.keys(commitlintConfig.rules ?? {})
@@ -534,6 +557,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('breaking'),
         },
         () => '',
       )
@@ -549,6 +573,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           buttons: (step > 1 ? [vscodeButton.left] : []).concat([
             step === totalSteps ? vscodeButton.confirm : vscodeButton.right,
           ]),
+          value: valueMap.get('issues'),
         },
         () => '',
       )
@@ -575,6 +600,9 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
     else {
       /** 添加内容 */
       messageObj[key] = content
+      /** 缓存值 */
+      valueMap.set(key, content)
+      /** 下一步 */
       i++
     }
   }

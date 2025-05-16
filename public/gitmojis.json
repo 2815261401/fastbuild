@@ -583,7 +583,15 @@
       "description": "Add or update code related to validation.",
       "name": "safety-vest",
       "semver": null
+    },
+    {
+      "emoji": "✈️",
+      "entity": "&#x2708;",
+      "code": ":airplane:",
+      "description": "Improve offline support.",
+      "name": "airplane",
+      "semver": null
     }
   ],
-  "lastTime": "2024-06-11 16:48:22"
+  "lastTime": "2025-05-16 11:11:02"
 }
