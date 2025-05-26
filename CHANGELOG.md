@@ -1,5 +1,11 @@
 # 更新日志
 
+## [0.1.7](https://github.com/2815261401/fastbuild/compare/v0.1.6...v0.1.7) (2025-05-26)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛修复 => 不是必填项无法继续下一步 ([f46836a](https://github.com/2815261401/fastbuild/commit/f46836a253621ae33d15561c3979a077bac4be9a))
+
 ## [0.1.6](https://github.com/2815261401/fastbuild/compare/v0.1.5...v0.1.6) (2025-05-16)
 
 ### ✨ Features | 新功能
