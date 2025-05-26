@@ -93,7 +93,7 @@ function showInputBox(options: QuickPickOptions<InputBox>, validate: (value: str
     /** 创建输入框弹窗 */
     const input = window.createInputBox()
     /** 设置输入框值 */
-    input.value = options.value!
+    input.value = options.value ?? ''
     /** 设置占位符 */
     if (options.placeholder) {
       input.placeholder = options.placeholder
@@ -347,7 +347,7 @@ async function getMessages(commitlintConfig: UserConfig, steps: (RuleField | 'gi
           /** 写入缓存 */
           writeFileSync(
             join(__dirname, '../public/gitmojis.json'),
-            JSON.stringify(gitmojis, null, 2),
+            `${JSON.stringify(gitmojis, null, 2)}\n`,
           )
         }
       }
