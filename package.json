@@ -15,7 +15,7 @@
   ],
   "main": "./dist/extension.cjs",
   "engines": {
-    "vscode": "^1.83.0"
+    "vscode": "^1.100.0"
   },
   "activationEvents": [
     "onStartupFinished"
@@ -215,35 +215,35 @@
   },
   "dependencies": {
     "dayjs": "^1.11.13",
-    "execa": "^9.5.3",
+    "execa": "^9.6.0",
     "node-fetch": "^3.3.2",
-    "xe-utils": "^3.5.30"
+    "xe-utils": "^3.7.4"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "4.13.0",
+    "@antfu/eslint-config": "4.13.2",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/rules": "^19.8.1",
     "@commitlint/types": "^19.8.1",
     "@release-it/custom-conventional-changelog": "workspace:*",
     "@types/conventional-commits-parser": "^5.0.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "22.15.18",
-    "@types/vscode": "1.83.0",
+    "@types/node": "22.15.29",
+    "@types/vscode": "1.100.0",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.3.2",
+    "@vscode/vsce": "^3.4.2",
     "conventional-changelog-cli": "^5.0.0",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "conventional-changelog-conventionalcommits": "^9.0.0",
     "conventional-commits-parser": "^6.1.0",
     "cz-customizable": "^7.4.0",
-    "eslint": "^9.26.0",
+    "eslint": "^9.28.0",
     "eslint-plugin-format": "^1.0.1",
     "generator-code": "^1.11.9",
     "husky": "^9.1.7",
-    "lint-staged": "^16.0.0",
-    "mocha": "^11.2.2",
+    "lint-staged": "^16.1.0",
+    "mocha": "^11.5.0",
     "ts-loader": "^9.5.2s",
     "typescript": "^5.8.3",
-    "webpack": "^5.99.8",
+    "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1"
   },
   "config": {
