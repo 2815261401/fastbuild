@@ -1,4 +1,5 @@
 export * from './commit'
 export * from './config'
+export * from './quickCommand'
 export * from './template'
 export * from './tool'

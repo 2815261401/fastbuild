@@ -60,6 +60,12 @@
           "when": "false"
         }
       ],
+      "editor/context": [
+        {
+          "command": "fast-build.quickCommand",
+          "group": "1_modification"
+        }
+      ],
       "explorer/context": [
         {
           "command": "fast-build.quickCommand",
@@ -88,7 +94,7 @@
       "properties": {
         "fast-build.templateWorkspaceFolder": {
           "type": "number",
-          "default": null,
+          "default": 0,
           "description": "模板配置所在工作区(多个工作区时需要设置)"
         },
         "fast-build.templateConfigPath": {

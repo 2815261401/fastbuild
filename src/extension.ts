@@ -1,8 +1,6 @@
 import type { ExtensionContext, Uri } from 'vscode'
-import { execSync } from 'node:child_process'
-import { join, relative } from 'node:path'
-import { commands, window, workspace } from 'vscode'
-import { catchError, commit, configuration, createFile, createTemplate, logs } from './utils'
+import { commands } from 'vscode'
+import { catchError, commit, configuration, createFile, createTemplate, logs, quickCommand } from './utils'
 
 export async function activate(context: ExtensionContext) {
   configuration.extensionUri = context.extensionUri
@@ -37,69 +35,7 @@ export async function activate(context: ExtensionContext) {
             }
           }
           else if (key === 'quickCommand') {
-            const stat = await workspace.fs.stat(resource)
-            const config = Object.entries(configuration.getCommandConfiguration())
-              .filter(([, value]) => !value.includes(`$${stat.type === 1 ? 'dir' : 'file'}`))
-              .map(([label, value]) => ({
-                label,
-                value,
-                description: value,
-              }))
-            if (config.length === 0) {
-              return
-            }
-            const select = await window.showQuickPick(config, {
-              placeHolder: '请选择要执行的命令',
-              ignoreFocusOut: true,
-              matchOnDescription: true,
-            })
-            if (select?.value) {
-              const shellPath = select?.value.startsWith('(bash)')
-                ? join(execSync('where git').toString(), '../../bin/bash.exe') || void 0
-                : void 0
-              const list = window.terminals.filter(v => /^快速命令(?:-[123])?$/.test(v.name))
-              const index = list.length
-              let name = `快速命令${index ? `-${index}` : ''}`
-              if (index > configuration.getCommandTerminalsNumber()) {
-                name = '快速命令'
-                list.forEach((v) => {
-                  v.dispose()
-                })
-              }
-              const pw = window.createTerminal({ name, shellPath, isTransient: true })
-              pw.show()
-              const fixedParameter = {
-                path: resource.fsPath,
-                file: stat.type === 1 ? resource.fsPath : void 0,
-                dir: stat.type === 2 ? resource.fsPath : void 0,
-              }
-              const commandList = (
-                shellPath ? select.value.replace(/^\(bash\)/, '') : select.value
-              ).split(/\$(path|file|dir|custom)/)
-              for (const [i, v] of Object.entries(commandList)) {
-                let path = fixedParameter[v as keyof typeof fixedParameter]
-                if (path) {
-                  path = relative(configuration.workspaceFolder.uri.fsPath, path)
-                }
-                else {
-                  path = v
-                }
-                if (v === 'custom') {
-                  const custom = await window.showInputBox({
-                    placeHolder: '请输入自定义',
-                    prompt: commandList.toSpliced(Number(i), 1, '<custom>').join(''),
-                    ignoreFocusOut: true,
-                  })
-                  if (custom === void 0) {
-                    logs.appendLine('取消执行命令')
-                    return
-                  }
-                  path = custom
-                }
-                commandList[Number(i)] = path
-              }
-              pw.sendText(commandList.join(''))
-            }
+            await quickCommand(resource)
           }
         }
         catch (error) {
