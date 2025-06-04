@@ -217,7 +217,7 @@
     "dayjs": "^1.11.13",
     "execa": "^9.6.0",
     "node-fetch": "^3.3.2",
-    "xe-utils": "^3.7.4"
+    "radashi": "^12.5.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.13.2",

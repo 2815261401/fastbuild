@@ -2,13 +2,12 @@ import type { ExtensionContext, Uri } from 'vscode'
 import { execSync } from 'node:child_process'
 import { join, relative } from 'node:path'
 import { commands, window, workspace } from 'vscode'
-import map from 'xe-utils/map'
 import { catchError, commit, configuration, createFile, createTemplate, logs } from './utils'
 
 export async function activate(context: ExtensionContext) {
   configuration.extensionUri = context.extensionUri
   context.subscriptions.push(
-    ...map(['createConfigFile', 'createTemplate', 'createFile', 'commit', 'quickCommand'], key =>
+    ...['createConfigFile', 'createTemplate', 'createFile', 'commit', 'quickCommand'].map(key =>
       commands.registerCommand(`fast-build.${key}`, async (resource: Uri) => {
         try {
           /** 获取工作区 */
