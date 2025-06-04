@@ -1,5 +1,24 @@
 # 更新日志
 
+## [0.1.8](https://github.com/2815261401/fastbuild/compare/v0.1.7...v0.1.8) (2025-06-04)
+
+### ✨ Features | 新功能
+
+* ✨修复自定义参数未聚焦, 支持在编辑器上下文显示命令 ([4cf0666](https://github.com/2815261401/fastbuild/commit/4cf066627de16315653938aa1cae8139b38f3990))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️更新依赖 ([10e02b0](https://github.com/2815261401/fastbuild/commit/10e02b0feabedf186f563e0f5e0f32972f152247))
+* 📝修改插件名称, 订正文档 ([9205f65](https://github.com/2815261401/fastbuild/commit/9205f65e873efcd1c458ba0b5164b01ed6c5567a))
+
+### 💄 Styles | 风格
+
+* 🎨调整代码格式 ([d216f9d](https://github.com/2815261401/fastbuild/commit/d216f9d21c23d13e015b1824d9a74505f17e7181))
+
+### 👷‍ Build System | 构建
+
+* ♻️将 xe-utils 替换为 radashi ([57c5ae9](https://github.com/2815261401/fastbuild/commit/57c5ae9a8cda5ffd1f22c455ab20929a22aef222))
+
 ## [0.1.7](https://github.com/2815261401/fastbuild/compare/v0.1.6...v0.1.7) (2025-05-26)
 
 ### 🐛 Bug Fixes | Bug 修复
