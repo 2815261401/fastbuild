@@ -1,13 +1,21 @@
-# 破坏性更新
+# 快速构建工具
 
-- 不再支持读取配置文件,新版本将根据`.vscode\template.config.json`的配置实现模板生成
-- 根据配置依次进行文本替换,注意: 排后面的会替换在前边的结果
-- 例如使用模板 `test/index.js`, 将`test=>index`,`index=>abc`, 实现结果为`abc/abc.js`
+## 1.约定式提交
 
-### 约定式提交
+在`源代码管理器`点击约定式提交，即可按照步骤生成`angular`风格的commit。
 
-该功能是对[Conventional Commits](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits)的模仿,基于[约定式提交](https://www.conventionalcommits.org/zh-hans/v1.0.0/),具体使用方式自己摸索
+## 2.模板导入(导出)
 
-### 快速执行命令
+> **<span style="color:red">注意!</span>** 模板只是保存了路径，并不是真实文件，会随着编辑而变动。
 
-- 目前仅有`快速删除`功能, 平常我用于删除`node_modules`文件夹
+- 在`资源管理器`右击选择`保存为模板`，即可将文件(夹)作为模板。
+- `导入模板`只有右击文件夹才会展示，选择后可以选择`当前工作区`的模板进行导入。
+- `替换`是根据你的预设替换为输入的文本，可以在`template.config.json`中配置默认值。
+
+## 3.快速执行命令
+
+- `$path`会替换为选择的文件(夹)路径
+- `$file`只对文件生效，会替换为选择的文件路径
+- `$dir`会替换为选择的文件夹路径，如果选择的是文件，则会使用文件的文件夹路径
+- `$custom` 是自定义参数，会替换为输入框内的值
+- `(bash)`在命令开头加上将使用git bash执行命令

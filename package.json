@@ -1,7 +1,7 @@
 {
   "publisher": "lichenghao",
   "name": "fast-build",
-  "displayName": "fast-build",
+  "displayName": "快速构建工具",
   "type": "module",
   "version": "0.1.7",
   "description": "快速构建的工具",
