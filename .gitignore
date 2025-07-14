@@ -1,5 +1,26 @@
-out
+# compiled output
 dist
+out
 node_modules
-.vscode-test/
-*.vsix
+.vscode-test
+
+# Logs
+logs
+*.log
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-workspace
+!.vscode/template.config.json
+
+# dotenv environment variable files
+.env.*.local
+.env.local
+
+# temp directory
+.temp
+.tmp

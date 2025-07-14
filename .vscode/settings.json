@@ -1,24 +1,50 @@
-// Place your settings in this file to overwrite default and user settings.
 {
   "files.exclude": {
-    "out": false, // set this to true to hide the "out" folder with the compiled JS files
-    "dist": false // set this to true to hide the "dist" folder with the compiled JS files
+    "out": false // set this to true to hide the "out" folder with the compiled JS files
   },
   "search.exclude": {
-    "out": true, // set this to false to include "out" folder in search results
-    "dist": true // set this to false to include "dist" folder in search results
+    "out": true // set this to false to include "out" folder in search results
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
+  "fast-build.gitRememberStep": "all",
+  "scss.lint.unknownAtRules": "ignore",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro",
+    "css",
+    "less",
+    "scss",
+    "pcss",
+    "postcss"
+  ],
+  "[json]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "explorer.fileNesting.patterns": {
-    "package.json": "pnpm-lock.yaml,yarn.lock,CNAME,.nvmrc,.npmrc",
-    ".editorconfig": "*cjs",
-    ".gitignore": ".gitattributes",
-    "README*": "*.${extname}"
-  },
-  "debug.onTaskErrors": "debugAnyway",
-  "files.associations": {
-    // "service.template": "typescript"
-  },
-  "fast-build.gitRememberStep": "all"
+    ".gitignore": ".gitattributes, .editorconfig, .gitmodules, commitlint.config.js, commitlint.config.ts, eslint.config.js, eslint.config.ts, lint-staged.config.js, lint-staged.config.ts, stylelint.config.js, stylelint.config.ts",
+    "README*": "*.${extname}",
+    "package.json": "pnpm-lock.yaml, .npmrc, pnpm-workspace.yaml, .pnpmfile.cjs, LICENSE"
+  }
 }

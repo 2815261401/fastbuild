@@ -1,5 +1,12 @@
 packages:
-  - release-it/*
-onlyBuiltDependencies:
+  - packages/custom/*
+  - packages/*
+
+enablePrePostScripts: true
+
+nodeLinker: hoisted
+
+ignoredBuiltDependencies:
   - '@vscode/vsce-sign'
+  - esbuild
   - keytar

@@ -1,23 +1,20 @@
+
 .vscode/**
 .vscode-test/**
-out/**
-node_modules/**
 src/**
 .gitignore
-.gitattributes
 .yarnrc
-webpack.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
-**/.eslintrc.json
+**/eslint.config.mjs
 **/*.map
 **/*.ts
+**/.vscode-test.*
 
 # custom
-.husky/**
-.editorConfig
-*.js
-!commitlint.config.js
-tsconfig.*
-*.vsix
 pnpm-lock.yaml
+pnpm-workspace.yaml
+packages
+.editorconfig
+.husky
+!commitlint.config.ts

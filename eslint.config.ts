@@ -4,13 +4,11 @@ import antfu from '@antfu/eslint-config'
 export default antfu(
   {
     formatters: true,
+    vue: true,
     typescript: true,
+    stylistic: true,
     rules: {
       'style/linebreak-style': ['error', 'unix'],
     },
-  },
-  {
-    files: ['.release-it.ts'],
-    rules: { 'no-template-curly-in-string': 'off' },
   },
 )

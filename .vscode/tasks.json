@@ -6,7 +6,56 @@
     {
       "type": "npm",
       "script": "watch",
-      "problemMatcher": "$ts-webpack-watch",
+      "problemMatcher": [
+        {
+          "owner": "typescript",
+          "source": "Typescript",
+          "fileLocation": "absolute",
+          "applyTo": "allDocuments",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "rolldown-vite v\\d+\\.\\d+\\.\\d+ building for production...",
+            "endsPattern": "built in"
+          },
+          "pattern": [
+            {
+              "regexp": "(ERROR|WARNING)\\(TypeScript\\)  (.*)",
+              "severity": 1,
+              "message": 2
+            },
+            {
+              "regexp": "^ FILE  (.*):(\\d*):(\\d*)$",
+              "file": 1,
+              "line": 2,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "owner": "eslint",
+          "source": "ESLint",
+          "fileLocation": "absolute",
+          "applyTo": "allDocuments",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "rolldown-vite v\\d+\\.\\d+\\.\\d+ building for production...",
+            "endsPattern": "built in"
+          },
+          "pattern": [
+            {
+              "regexp": "^ (ERROR|WARNING)\\(ESLint\\)  (.*)$",
+              "severity": 1,
+              "message": 2
+            },
+            {
+              "regexp": "^ FILE  (.*):(\\d*):(\\d*)$",
+              "file": 1,
+              "line": 2,
+              "column": 3
+            }
+          ]
+        }
+      ],
       "isBackground": true,
       "presentation": {
         "reveal": "never",
@@ -30,7 +79,10 @@
     },
     {
       "label": "tasks: watch-tests",
-      "dependsOn": ["pnpm: watch", "pnpm: watch-tests"],
+      "dependsOn": [
+        "npm: watch",
+        "npm: watch-tests"
+      ],
       "problemMatcher": []
     }
   ]

@@ -4,8 +4,10 @@
   "displayName": "快速构建工具",
   "type": "module",
   "version": "0.1.8",
+  "packageManager": "pnpm@10.13.0",
   "description": "快速构建的工具",
   "preview": false,
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/2815261401/fastbuild.git"
@@ -13,24 +15,15 @@
   "categories": [
     "Other"
   ],
-  "main": "./dist/extension.cjs",
+  "main": "./out/extension.js",
   "engines": {
-    "vscode": "^1.100.0"
+    "node": "22.x",
+    "pnpm": "10.x",
+    "vscode": "^1.102.0"
   },
-  "activationEvents": [
-    "onStartupFinished"
-  ],
+  "activationEvents": [],
   "contributes": {
     "commands": [
-      {
-        "command": "fast-build.createTemplate",
-        "title": "保存为模板"
-      },
-      {
-        "command": "fast-build.createFile",
-        "when": "explorerResourceIsFolder",
-        "title": "导入模板"
-      },
       {
         "command": "fast-build.commit",
         "title": "约定式提交",
@@ -39,46 +32,13 @@
           "light": "public/menu-icon-light.svg",
           "dark": "public/menu-icon-dark.svg"
         }
-      },
-      {
-        "command": "fast-build.quickCommand",
-        "title": "快速执行命令"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "fast-build.createTemplate",
+          "command": "fast-build.commit",
           "when": "false"
-        },
-        {
-          "command": "fast-build.createFile",
-          "when": "false"
-        },
-        {
-          "command": "fast-build.quickCommand",
-          "when": "false"
-        }
-      ],
-      "editor/context": [
-        {
-          "command": "fast-build.quickCommand",
-          "group": "1_modification"
-        }
-      ],
-      "explorer/context": [
-        {
-          "command": "fast-build.quickCommand",
-          "group": "1_modification"
-        },
-        {
-          "command": "fast-build.createTemplate",
-          "group": "1_modification"
-        },
-        {
-          "command": "fast-build.createFile",
-          "when": "explorerResourceIsFolder",
-          "group": "1_modification"
         }
       ],
       "scm/title": [
@@ -92,32 +52,7 @@
     "configuration": {
       "title": "快速构建工具",
       "properties": {
-        "fast-build.templateWorkspaceFolder": {
-          "type": "number",
-          "default": 0,
-          "description": "模板配置所在工作区(多个工作区时需要设置)"
-        },
-        "fast-build.templateConfigPath": {
-          "type": "string",
-          "default": ".vscode/template.config.json",
-          "description": "模板配置保存位置"
-        },
-        "fast-build.showOutputChannel": {
-          "type": "string",
-          "enum": [
-            "off",
-            "always",
-            "onError"
-          ],
-          "default": "onError",
-          "description": "什么时候打开输出面板。"
-        },
-        "fast-build.gitAutoPush": {
-          "type": "boolean",
-          "default": true,
-          "description": "设置为true将自动提交。"
-        },
-        "fast-build.gitStep": {
+        "fast-build.commitStep": {
           "type": "object",
           "default": {
             "default": [
@@ -166,89 +101,74 @@
           },
           "additionalProperties": false
         },
-        "fast-build.gitRememberStep": {
+        "fast-build.commitRememberStep": {
           "type": "string",
           "default": "",
-          "markdownDescription": "上次使用步骤"
+          "markdownDescription": "记住的步骤。"
         },
-        "fast-build.gitScopes": {
+        "fast-build.commitNeedRemember": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "是否需要记住步骤。"
+        },
+        "fast-build.commitScopes": {
           "type": "array",
           "default": [],
           "markdownDescription": "指定 `scope` 中的可选项。"
         },
-        "fast-build.gitBreakingPrefix": {
-          "type": "string",
-          "default": "BREAKING CHANGE:",
-          "markdownDescription": "`BREAKING CHANGE`的前缀"
-        },
-        "fast-build.gitAppendBranchName": {
+        "fast-build.commitAppendBranchName": {
           "type": "boolean",
-          "default": true,
-          "markdownDescription": "是否添加分支名称"
-        },
-        "fast-build.commandConfiguration": {
-          "type": "object",
-          "additionalProperties": "string",
-          "default": {
-            "强制删除": "Remove-Item -Force -Recurse $path",
-            "强制删除(git bash)": "(bash)rm -rf $path"
-          },
-          "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数,`(bash)`将使用git bash执行命令。"
-        },
-        "fast-build.commandTerminalsNumber": {
-          "type": "number",
-          "default": 3,
-          "minimum": 1,
-          "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
+          "default": false,
+          "markdownDescription": "是否在提交信息中追加当前分支名称。"
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile": "vite build",
+    "watch": "vite build --watch",
+    "package": "vite build --mode production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "lint": "eslint",
-    "test": "node ./out/test/runTest.js",
+    "test": "vscode-test",
     "build": "vsce package",
     "pre-release": "vsce package --pre-release",
-    "release": "release-it",
-    "prepare": "husky"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky",
+    "release": "custom-release"
   },
   "dependencies": {
-    "dayjs": "^1.11.13",
-    "execa": "^9.6.0",
-    "node-fetch": "^3.3.2",
-    "radashi": "^12.5.1"
+    "conventional-changelog-conventionalcommits": "^9.1.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "4.14.1",
+    "@antfu/eslint-config": "^4.16.2",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/rules": "^19.8.1",
     "@commitlint/types": "^19.8.1",
-    "@release-it/custom-conventional-changelog": "workspace:*",
-    "@types/conventional-commits-parser": "^5.0.1",
+    "@custom/conventional-changelog": "workspace:*",
     "@types/mocha": "^10.0.10",
-    "@types/node": "22.15.31",
-    "@types/vscode": "1.100.0",
+    "@types/node": "^22.16.3",
+    "@types/vscode": "^1.102.0",
+    "@vscode-use/utils": "^0.1.59",
+    "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.5.0",
-    "conventional-changelog-cli": "^5.0.0",
-    "conventional-changelog-conventionalcommits": "^9.0.0",
-    "conventional-commits-parser": "^6.2.0",
-    "eslint": "^9.28.0",
+    "@vscode/vsce": "^3.6.0",
+    "cosmiconfig": "^9.0.0",
+    "dayjs": "^1.11.13",
+    "eslint": "^9.31.0",
     "eslint-plugin-format": "^1.0.1",
-    "generator-code": "^1.11.9",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.0",
-    "mocha": "^11.6.0",
-    "ts-loader": "^9.5.2s",
+    "jiti": "^2.4.2",
+    "jsonc-parser": "^3.3.1",
+    "lilconfig": "^3.1.3",
+    "lint-staged": "^16.1.2",
+    "radashi": "^12.6.0",
+    "release-it": "^19.0.3",
+    "tinyglobby": "^0.2.14",
     "typescript": "^5.8.3",
-    "webpack": "^5.99.9",
-    "webpack-cli": "^6.0.1"
+    "vite": "npm:rolldown-vite@7.0.8"
   }
 }

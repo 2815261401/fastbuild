@@ -1,20 +1,21 @@
-/** @type {import('@commitlint/types').UserConfig} **/
+import type { UserConfig } from '@commitlint/types'
+
 export default {
   parserPreset: 'conventional-changelog-conventionalcommits',
   rules: {
-    'header-max-length': [2, 'always', 100],
+    'header-max-length': [2, 'always', 120],
     'type-case': [2, 'always', 'lower-case'],
     'type-empty': [2, 'never'],
     'type-enum': [
       2,
       'always',
-      ['feat', 'fix', 'perf', 'chore', 'docs', 'style', 'refactor', 'revert', 'test', 'build', 'ci'],
+      ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'],
     ],
     'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
     'body-leading-blank': [1, 'always'],
-    'body-max-line-length': [2, 'always', 100],
+    'body-max-line-length': [2, 'always', 120],
     'footer-leading-blank': [1, 'always'],
     'footer-max-line-length': [2, 'always', 100],
   },
@@ -92,4 +93,4 @@ export default {
       },
     },
   },
-}
+} satisfies UserConfig

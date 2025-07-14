@@ -2,17 +2,24 @@
   "compilerOptions": {
     /** 使用增量编译，提高后续编译速度 */
     "incremental": true,
+    /** 增量状态信息文件 */
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     /** 输出目标版本 */
     "target": "ESNext",
     /** 需要引用的库 */
     "lib": ["ESNext"],
-    /** 模块导入的基准路径 */
-    "baseUrl": "./",
+
+    /** 使用 class 字段的定义语法 */
+    "useDefineForClassFields": true,
+    /** 启用装饰器的元数据发射，用于依赖注入等场景 */
+    "emitDecoratorMetadata": true,
+    /** 启用实验性的装饰器特性。 */
+    "experimentalDecorators": true,
     /** 模块类型 */
     "module": "ESNext",
 
     /** 以node的形式解析模块 */
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     /** 允许直接导入 .json 文件 */
     "resolveJsonModule": true,
     /** 禁止导入 TypeScript 扩展名的文件 */
@@ -21,13 +28,47 @@
     "allowJs": false,
     /** 严格模式 */
     "strict": true,
-    /** 允许隐式的 any 类型 */
-    "noImplicitAny": false,
+    /** 设为false时，允许非函数值作为第一个参数传递给bind、call、apply */
+    "strictBindCallApply": false,
+    /** 在变量声明时进行严格的空值检查 */
+    "strictNullChecks": true,
+    /** 禁止 switch 语句中未处理的 case */
+    "noFallthroughCasesInSwitch": true,
+    /** 禁止隐式的 any 类型 */
+    "noImplicitAny": true,
+    /** 函数必须有明确的返回类型或返回 undefined */
+    "noImplicitReturns": true,
+    /** 在 this 上进行隐式类型检查 */
+    "noImplicitThis": true,
+    /** 禁止从未使用的局部变量 */
+    "noUnusedLocals": true,
+    /** 禁止未使用的函数和方法参数 */
+    "noUnusedParameters": true,
+    /** 生成对应的`.d.ts`文件 */
+    "declaration": false,
+    /** 从`.d.ts`文件中排除引用的声明 */
+    "declarationMap": false,
+    /** 输出目录 */
+    "outDir": "out",
+    /** 删除编译输出中的注释。 */
+    "removeComments": true,
     /** 生成 sourcemap */
     "sourceMap": true,
     /** 允许从没有设置默认导出的模块中默认导入 */
     "allowSyntheticDefaultImports": true,
     /** 使 CommonJS 和 ES 模块能够更无缝地一起工作 */
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    /** 强制文件名使用一致的大小写，避免因操作系统差异导致的问题 */
+    "forceConsistentCasingInFileNames": true,
+    /** 将每个文件视为独立模块，不考虑全局类型声明 */
+    "isolatedModules": true,
+    /** 跳过类型检查 */
+    "skipLibCheck": true,
+    /** 不列出编译过程中处理的所有文件 */
+    "listFiles": false
+  },
+  /** 包含的文件路径模式 */
+  "include": ["src/**/*.ts", "types/**/*.d.ts"],
+  /** 排除的文件或目录 */
+  "exclude": ["node_modules"]
 }
