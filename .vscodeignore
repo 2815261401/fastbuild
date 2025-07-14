@@ -18,3 +18,4 @@ packages
 .editorconfig
 .husky
 !commitlint.config.ts
+!tsconfig.json
