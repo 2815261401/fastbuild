@@ -36,6 +36,15 @@
       {
         "command": "fast-build.quickCommand",
         "title": "快速执行命令"
+      },
+      {
+        "command": "fast-build.saveTemplate",
+        "title": "保存为模板"
+      },
+      {
+        "command": "fast-build.useTemplate",
+        "when": "explorerResourceIsFolder",
+        "title": "使用模板"
       }
     ],
     "menus": {
@@ -46,6 +55,14 @@
         },
         {
           "command": "fast-build.quickCommand",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.saveTemplate",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.useTemplate",
           "when": "false"
         }
       ],
@@ -66,6 +83,15 @@
         {
           "command": "fast-build.quickCommand",
           "group": "0_quick_command"
+        },
+        {
+          "command": "fast-build.saveTemplate",
+          "group": "1_template"
+        },
+        {
+          "command": "fast-build.useTemplate",
+          "when": "explorerResourceIsFolder",
+          "group": "1_template"
         }
       ]
     },
@@ -156,6 +182,26 @@
           "default": 3,
           "minimum": 1,
           "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
+        },
+        "fast-build.templateWorkspaceFolder": {
+          "type": "number",
+          "default": -1,
+          "description": "模板配置所在工作区(多个工作区时需要设置)"
+        },
+        "fast-build.templateConfigInExtension": {
+          "type": "boolean",
+          "default": true,
+          "description": "模板配置是否保存在扩展中"
+        },
+        "fast-build.templateConfigPath": {
+          "type": "string",
+          "default": ".vscode/template.config.jsonc",
+          "description": "模板配置保存位置"
+        },
+        "fast-build.templateFolderPath": {
+          "type": "string",
+          "default": ".vscode/template",
+          "description": "模板保存位置"
         }
       }
     }

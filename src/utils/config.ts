@@ -68,3 +68,27 @@ export function quickCommandConfig(): Record<string, string> {
 export function quickCommandMaxTerminalsNumber(): number {
   return workspace.getConfiguration().get<number>(`${extendedName}.quickCommandMaxTerminalsNumber`, 3)
 }
+
+/** 获取模板配置是否保存在扩展中 */
+export function templateConfigInExtension(): boolean {
+  return workspace.getConfiguration().get<boolean>(`${extendedName}.templateConfigInExtension`, true)
+}
+
+/** 获取模板配置所在工作区 */
+export function templateWorkspaceFolder(value?: number): number {
+  if (value === void 0) {
+    return workspace.getConfiguration().get<number>(`${extendedName}.templateWorkspaceFolder`, 0)
+  }
+  workspace.getConfiguration().update(`${extendedName}.templateWorkspaceFolder`, value)
+  return value
+}
+
+/** 获取模板配置保存位置 */
+export function templateConfigPath(): string {
+  return workspace.getConfiguration().get<string>(`${extendedName}.templateConfigPath`, '.vscode/template.config.jsonc')
+}
+
+/** 获取模板保存位置 */
+export function templateFolderPath(): string {
+  return workspace.getConfiguration().get<string>(`${extendedName}.templateFolderPath`, '.vscode/template')
+}
