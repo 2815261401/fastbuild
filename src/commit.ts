@@ -14,7 +14,7 @@ import { objectify, tryit } from 'radashi'
 import { extensions, Uri, workspace } from 'vscode'
 
 import defaultConfig from '../commitlint.config'
-import { commitAppendBranchName, commitRememberStep, commitScopes, commitStep, createInquiryItem, existsPath, loadConfig, logs, loopInquiry, rootConfig, showBox, vscodeButton } from './utils'
+import { commitAppendBranchName, commitRememberStep, commitScopes, commitStep, commitUpdateGitmoji, createInquiryItem, existsPath, loadConfig, logs, loopInquiry, rootConfig, showBox, vscodeButton } from './utils'
 
 interface Gitmoji {
   emoji: string
@@ -26,7 +26,7 @@ interface Gitmoji {
 }
 async function getGitmojis(): Promise<{ gitmojis: Gitmoji[], lastTime: string }> {
   /** 获取中文 */
-  const zh = extensions.getExtension('MS-CEINTL.vscode-language-pack-zh-hans')
+  const zh = !commitUpdateGitmoji() && extensions.getExtension('MS-CEINTL.vscode-language-pack-zh-hans')
   /** 获取配置 */
   const fileData = await workspace.fs.readFile(Uri.file(path.join(import.meta.dirname, '../public', zh ? 'gitmojis.zh.json' : 'gitmojis.json')))
   /** 解析内容 */
@@ -219,37 +219,39 @@ export async function commit(v: SourceControl) {
       return value
     }),
     createQuickPick('gitmoji', commitlintConfig, async () => {
-      const [error] = await tryit(async () => {
-        const lastTime = dayjs(gitmojis.lastTime).add(1, 'day').toDate()
-        const nowTime = dayjs().toDate()
-        /** 如果超过一天，则获取最新表情数据 */
-        if (lastTime < nowTime) {
+      if (commitUpdateGitmoji()) {
+        const [error] = await tryit(async () => {
+          const lastTime = dayjs(gitmojis.lastTime).add(1, 'day').toDate()
+          const nowTime = dayjs().toDate()
+          /** 如果超过一天，则获取最新表情数据 */
+          if (lastTime < nowTime) {
           /** 请求获取表情数据 */
-          const data = (await (await fetch('https://gitmoji.dev/api/gitmojis', { method: 'GET' })).json()) as {
-            gitmojis: {
-              emoji: string
-              entity: string
-              code: string
-              description: string
-              name: string
-              semver: null | string
-            }[]
+            const data = (await (await fetch('https://gitmoji.dev/api/gitmojis', { method: 'GET' })).json()) as {
+              gitmojis: {
+                emoji: string
+                entity: string
+                code: string
+                description: string
+                name: string
+                semver: null | string
+              }[]
+            }
+            /** 缓存表情数据 */
+            gitmojis.gitmojis = data.gitmojis
+            /** 更新缓存时间 */
+            gitmojis.lastTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
+            /** 写入缓存 */
+            writeFileSync(
+              path.join(import.meta.dirname, '../public/gitmojis.json'),
+              `${JSON.stringify(gitmojis, null, 2)}\n`,
+            )
           }
-          /** 缓存表情数据 */
-          gitmojis.gitmojis = data.gitmojis
-          /** 更新缓存时间 */
-          gitmojis.lastTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-          /** 写入缓存 */
-          writeFileSync(
-            path.join(import.meta.dirname, '../public/gitmojis.json'),
-            `${JSON.stringify(gitmojis, null, 2)}\n`,
-          )
-        }
-      })()
-      if (error) {
+        })()
+        if (error) {
         /** 记录错误 */
-        logs.error(error.message)
-        logs.info('获取表情失败，使用本地缓存')
+          logs.error(error.message)
+          logs.info('获取表情失败，使用本地缓存')
+        }
       }
       return [
         {

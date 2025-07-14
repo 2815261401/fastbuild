@@ -59,6 +59,11 @@ export function commitAppendBranchName(): boolean {
   return workspace.getConfiguration().get<boolean>(`${extendedName}.commitAppendBranchName`, false)
 }
 
+/** 获取是否更新 gitmoji */
+export function commitUpdateGitmoji(): boolean {
+  return workspace.getConfiguration().get<boolean>(`${extendedName}.commitUpdateGitmoji`, false)
+}
+
 /** 获取快速执行命令 */
 export function quickCommandConfig(): Record<string, string> {
   return workspace.getConfiguration().get<Record<string, string>>(`${extendedName}.quickCommandConfig`, {})
