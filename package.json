@@ -32,12 +32,20 @@
           "light": "public/menu-icon-light.svg",
           "dark": "public/menu-icon-dark.svg"
         }
+      },
+      {
+        "command": "fast-build.quickCommand",
+        "title": "快速执行命令"
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "fast-build.commit",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.quickCommand",
           "when": "false"
         }
       ],
@@ -46,6 +54,18 @@
           "when": "scmProvider == git",
           "command": "fast-build.commit",
           "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "fast-build.quickCommand",
+          "group": "0_quick_command"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "fast-build.quickCommand",
+          "group": "0_quick_command"
         }
       ]
     },
@@ -120,6 +140,22 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "是否在提交信息中追加当前分支名称。"
+        },
+        "fast-build.quickCommandConfig": {
+          "type": "object",
+          "additionalProperties": "string",
+          "default": {
+            "强制删除": "Remove-Item -Force -Recurse $path",
+            "强制删除(git bash)": "(bash)rm -rf $path",
+            "删除所有node_modules": "(bash)find . -type d -name 'node_modules' -exec rm -rf {} +"
+          },
+          "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数,`$custom<text>`将会设置默认值,`(bash)`将使用git bash执行命令。"
+        },
+        "fast-build.quickCommandMaxTerminalsNumber": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
         }
       }
     }

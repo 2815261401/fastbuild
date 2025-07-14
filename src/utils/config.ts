@@ -58,3 +58,13 @@ export function commitScopes(value?: string[]): string[] {
 export function commitAppendBranchName(): boolean {
   return workspace.getConfiguration().get<boolean>(`${extendedName}.commitAppendBranchName`, false)
 }
+
+/** 获取快速执行命令 */
+export function quickCommandConfig(): Record<string, string> {
+  return workspace.getConfiguration().get<Record<string, string>>(`${extendedName}.quickCommandConfig`, {})
+}
+
+/** 获取最大终端数量 */
+export function quickCommandMaxTerminalsNumber(): number {
+  return workspace.getConfiguration().get<number>(`${extendedName}.quickCommandMaxTerminalsNumber`, 3)
+}

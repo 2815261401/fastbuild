@@ -1,8 +1,8 @@
-import type { InputBox, InputBoxValidationMessage, QuickInputButton, QuickPick, QuickPickItem } from 'vscode'
+import type { InputBox, InputBoxValidationMessage, QuickInputButton, QuickPick, QuickPickItem, Uri, WorkspaceFolder } from 'vscode'
 
 import { assign, isNullish } from 'radashi'
 
-import { QuickInputButtons, ThemeIcon, window } from 'vscode'
+import { QuickInputButtons, ThemeIcon, window, workspace } from 'vscode'
 
 import { logs } from './config'
 
@@ -443,4 +443,51 @@ export function createInquiryItem<K, V, T extends PickItem<V>>(
       return result
     }),
   }
+}
+
+/** 获取当前工作目录 */
+export async function getWorkspaceFolder(resource?: Uri): Promise<WorkspaceFolder | null> {
+  /** 获取全部工作区 */
+  const workspaceFolders = workspace.workspaceFolders
+  /** 当前工作区 */
+  let workspaceFolder: WorkspaceFolder | undefined = void 0
+  /** 如果存在工作区,进行选择,否则提示 */
+  if (workspaceFolders) {
+    /** 如果只有一个文件夹,直接匹配 */
+    if (workspaceFolders.length === 1) {
+      workspaceFolder = workspaceFolders[0]
+    }
+    /** 如果有资源 */
+    else if (resource) {
+      /** 匹配资源 */
+      workspaceFolder = workspace.getWorkspaceFolder(resource)
+    }
+    /** 如果没有工作区 */
+    if (!workspaceFolder) {
+      /** 让用户自己选择 */
+      const select = await window.showQuickPick(
+        workspaceFolders.map(value => ({
+          label: value.name,
+          value,
+          description: value.uri.fsPath,
+        })),
+        {
+          placeHolder: '请选择工作区',
+          ignoreFocusOut: true,
+          matchOnDescription: true,
+          matchOnDetail: true,
+        },
+      )
+      /** 如果选择了工作区 */
+      if (select) {
+        workspaceFolder = select.value
+      }
+    }
+  }
+  /** 如果存在工作区 */
+  if (workspaceFolder) {
+    return workspaceFolder
+  }
+  logs.error('未找到工作区!')
+  return null
 }
