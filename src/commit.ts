@@ -88,6 +88,11 @@ function createQuickPick(
   commitlintConfig: QualifiedConfig,
   items: () => PickItem<string>[] | Promise<PickItem<string>[]>,
   valueFormat: (options: PickOptions<PickItem<string>, false>, select: PickItem<string>) => any = (_, select) => select.value,
+  customResult?: (
+    config: { key: CommitType, map: Map<CommitType, any>, list: InquiryItem<CommitType>[], index: number },
+    options: PickOptions<PickItem<string>, false>,
+    select: PickItem<string>
+  ) => Promise<any>,
 ): InquiryItem<CommitType> {
   return createInquiryItem<CommitType, string>('quickPick', {
     key: type as CommitType,
@@ -110,6 +115,7 @@ function createQuickPick(
       } as PickOptions<PickItem<string>, false>
     },
     valueFormat,
+    customResult,
   })
 }
 
@@ -190,7 +196,7 @@ export async function commit(v: SourceControl) {
           alwaysShow: true,
         },
       ]
-    }, async (options, select) => {
+    }, void 0, async (_config, options, select) => {
       let value = select.value
       if (['once', 'new'].includes(value)) {
         /** 获取作用域 */
