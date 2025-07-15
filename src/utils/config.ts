@@ -35,8 +35,8 @@ export function commitStep(): CommitStep {
 export function commitRememberStep(value?: string): string {
   const filePath = path.join(import.meta.dirname, 'commitRememberStep')
   if (value === void 0) {
-    const [result] = tryit(() => readFileSync(filePath))()
-    return workspace.getConfiguration().get<string>(`${extendedName}.commitRememberStep`, result?.toString() ?? '')
+    const [,result] = tryit(() => readFileSync(filePath))()
+    return workspace.getConfiguration().get<string>(`${extendedName}.commitRememberStep`) || (result?.toString() ?? '')
   }
   writeFileSync(filePath, Buffer.from(value, 'utf8'))
   if (workspace.getConfiguration().get<boolean>(`${extendedName}.commitNeedRemember`, false)) {
