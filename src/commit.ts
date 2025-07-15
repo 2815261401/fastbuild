@@ -208,7 +208,7 @@ export async function commit(v: SourceControl) {
             step: options.step,
             totalSteps: options.totalSteps,
             validateInput(v) {
-              return v?.trim() ? void 0 : '作用域不能为空'
+              return v?.trim() ? (commitScopes().includes(v) ? '作用域已存在' : void 0) : '作用域不能为空'
             },
           },
         )
