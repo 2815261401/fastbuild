@@ -10,7 +10,7 @@ import path from 'node:path'
 import rules from '@commitlint/rules'
 import { RuleConfigSeverity } from '@commitlint/types'
 import dayjs from 'dayjs'
-import { objectify, tryit } from 'radashi'
+import { isNullish, objectify, tryit } from 'radashi'
 import { extensions, Uri, workspace } from 'vscode'
 
 import defaultConfig from '../commitlint.config'
@@ -196,33 +196,37 @@ export async function commit(v: SourceControl) {
           alwaysShow: true,
         },
       ]
-    }, void 0, async (_config, options, select) => {
-      let value = select.value
-      if (['once', 'new'].includes(value)) {
+    }, void 0, async ({ map, key }, options, select) => {
+      if (!isNullish(select)) {
+        let value = select.value
+        if (['once', 'new'].includes(value)) {
         /** 获取作用域 */
-        const scope = await showBox(
-          'input',
-          {
-            title: 'scope',
-            placeholder: commitlintConfig.prompt?.questions?.scope?.description ?? '请输入作用域',
-            step: options.step,
-            totalSteps: options.totalSteps,
-            validateInput(v) {
-              return v?.trim() ? (commitScopes().includes(v) ? '作用域已存在' : void 0) : '作用域不能为空'
+          const scope = await showBox(
+            'input',
+            {
+              title: 'scope',
+              placeholder: commitlintConfig.prompt?.questions?.scope?.description ?? '请输入作用域',
+              step: options.step,
+              totalSteps: options.totalSteps,
+              validateInput(v) {
+                return v?.trim() ? (commitScopes().includes(v) ? '作用域已存在' : void 0) : '作用域不能为空'
+              },
             },
-          },
-        )
-        if (!scope) {
-          return 0
-        }
-        else {
-          if (value === 'new') {
-            commitScopes(commitScopes().concat([scope]))
+          )
+          if (!scope) {
+            return 0
           }
-          value = scope
+          else {
+            if (value === 'new') {
+              commitScopes(commitScopes().concat([scope]))
+            }
+            value = scope
+          }
         }
+        map.set(key, value)
+        return true
       }
-      return value
+      return select
     }),
     createQuickPick('gitmoji', commitlintConfig, async () => {
       if (commitUpdateGitmoji()) {
