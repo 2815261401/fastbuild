@@ -378,6 +378,7 @@ export async function commit(v: SourceControl) {
       message += `\n分支: ${git.state.HEAD?.name}`
     }
     git.inputBox.value = message
+    commitRememberStep(result.get('steps') ?? '')
     logs.info(`设置提交信息:`)
     logs.info(message)
   }
