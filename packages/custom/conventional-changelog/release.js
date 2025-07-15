@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
 import process from 'node:process'
-import confirm from '@inquirer/confirm'
+import checkbox from '@inquirer/checkbox'
 import select, { Separator } from '@inquirer/select'
 import chalk from 'chalk'
 import { Command } from 'commander'
@@ -70,7 +70,10 @@ program
       /** 获取主包 */
       const { name, version, description } = getPackageJson(process.cwd())
       /** 插入主包 */
-      choices.unshift([{ name, value: '', version, description }])
+      choices.unshift([
+        new Separator(chalk.yellow('主包')),
+        { name, value: '', version, description },
+      ])
       /** 扁平 */
       choices = choices.flat()
       /** 选择 */
@@ -78,11 +81,29 @@ program
         message: '选择要发布的包',
         default: '',
         choices,
+        loop: false,
       })
-      /** 是否不增加版本 */
-      const noIncrement = await confirm({
-        message: '是否不增加版本？',
-        default: false,
+      /** 命令行参数 */
+      const parameters = await checkbox({
+        message: '是否增加版本？',
+        choices: [
+          {
+            name: '不增加版本',
+            value: '--no-increment',
+          },
+          {
+            name: '不提交',
+            value: '--no-git.commit',
+          },
+          {
+            name: '不标记',
+            value: '--no-git.tag',
+          },
+          {
+            name: '不推送',
+            value: '--no-git.push',
+          },
+        ],
       })
       /** 查找出选中 */
       const item = choices.find(item => item.value === packageName)
@@ -97,10 +118,12 @@ program
         '-c',
         releaseItPath,
       ]
-      if (noIncrement) {
-        args.unshift('--no-increment')
+      if (parameters.length > 0) {
+        args.push(...parameters)
       }
+      /** 获取版本 */
       let npm_package_version = packageName ? `${packageName}@${item.version}` : item.version
+      /** 判断版本是否存在 */
       const [result] = await tryit(() => execa('git', ['rev-parse', '--verify', npm_package_version], { reject: false }))()
       if (!result) {
         npm_package_version = void 0

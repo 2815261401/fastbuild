@@ -93,9 +93,9 @@ importers:
 
   packages/custom/conventional-changelog:
     dependencies:
-      '@inquirer/confirm':
-        specifier: ^5.1.13
-        version: 5.1.13(@types/node@22.16.3)
+      '@inquirer/checkbox':
+        specifier: ^4.1.9
+        version: 4.1.9(@types/node@22.16.3)
       '@inquirer/select':
         specifier: ^4.2.4
         version: 4.2.4(@types/node@22.16.3)
@@ -108,9 +108,6 @@ importers:
       execa:
         specifier: ^9.6.0
         version: 9.6.0
-      inquirer:
-        specifier: ^12.7.0
-        version: 12.7.0(@types/node@22.16.3)
       type-fest:
         specifier: ^4.41.0
         version: 4.41.0
@@ -131,10 +128,10 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       conventional-changelog:
-        specifier: ^7.1.0
+        specifier: ^7.1.1
         version: 7.1.1(conventional-commits-filter@5.0.0)
       conventional-commits-parser:
-        specifier: ^6.0.0
+        specifier: ^6.2.0
         version: 6.2.0
       conventional-recommended-bump:
         specifier: ^10.0.0
@@ -711,50 +708,6 @@ packages:
 
   '@oxc-project/types@0.76.0':
     resolution: {integrity: sha512-CH3THIrSViKal8yV/Wh3FK0pFhp40nzW1MUDCik9fNuid2D/7JJXKJnfFOAvMxInGXDlvmgT6ACAzrl47TqzkQ==}
-
-  '@oxlint/darwin-arm64@1.6.0':
-    resolution: {integrity: sha512-m3wyqBh1TOHjpr/dXeIZY7OoX+MQazb+bMHQdDtwUvefrafUx+5YHRvulYh1sZSQ449nQ3nk3qj5qj535vZRjg==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@oxlint/darwin-x64@1.6.0':
-    resolution: {integrity: sha512-75fJfF/9xNypr7cnOYoZBhfmG1yP7ex3pUOeYGakmtZRffO9z1i1quLYhjZsmaDXsAIZ3drMhenYHMmFKS3SRg==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@oxlint/linux-arm64-gnu@1.6.0':
-    resolution: {integrity: sha512-YhXGf0FXa72bEt4F7eTVKx5X3zWpbAOPnaA/dZ6/g8tGhw1m9IFjrabVHFjzcx3dQny4MgA59EhyElkDvpUe8A==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
-  '@oxlint/linux-arm64-musl@1.6.0':
-    resolution: {integrity: sha512-T3JDhx8mjGjvh5INsPZJrlKHmZsecgDYvtvussKRdkc1Nnn7WC+jH9sh5qlmYvwzvmetlPVNezAoNvmGO9vtMg==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
-  '@oxlint/linux-x64-gnu@1.6.0':
-    resolution: {integrity: sha512-Dx7ghtAl8aXBdqofJpi338At6lkeCtTfoinTYQXd9/TEJx+f+zCGNlQO6nJz3ydJBX48FDuOFKkNC+lUlWrd8w==}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
-  '@oxlint/linux-x64-musl@1.6.0':
-    resolution: {integrity: sha512-7KvMGdWmAZtAtg6IjoEJHKxTXdAcrHnUnqfgs0JpXst7trquV2mxBeRZusQXwxpu4HCSomKMvJfsp1qKaqSFDg==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
-  '@oxlint/win32-arm64@1.6.0':
-    resolution: {integrity: sha512-iSGC9RwX+dl7o5KFr5aH7Gq3nFbkq/3Gda6mxNPMvNkWrgXdIyiINxpyD8hJu566M+QSv1wEAu934BZotFDyoQ==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@oxlint/win32-x64@1.6.0':
-    resolution: {integrity: sha512-jOj3L/gfLc0IwgOTkZMiZ5c673i/hbAmidlaylT0gE6H18hln9HxPgp5GCf4E4y6mwEJlW8QC5hQi221+9otdA==}
-    cpu: [x64]
-    os: [win32]
 
   '@phun-ky/typeof@1.2.8':
     resolution: {integrity: sha512-7J6ca1tK0duM2BgVB+CuFMh3idlIVASOP2QvOCbNWDc6JnvjtKa9nufPoJQQ4xrwBonwgT1TIhRRcEtzdVgWsA==}
@@ -2371,15 +2324,6 @@ packages:
       '@types/node':
         optional: true
 
-  inquirer@12.7.0:
-    resolution: {integrity: sha512-KKFRc++IONSyE2UYw9CJ1V0IWx5yQKomwB+pp3cWomWs+v2+ZsG11G2OVfAjFS6WWCppKw+RfKmpqGfSzD5QBQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
@@ -3154,11 +3098,6 @@ packages:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
 
-  oxlint@1.6.0:
-    resolution: {integrity: sha512-jtaD65PqzIa1udvSxxscTKBxYKuZoFXyKGLiU1Qjo1ulq3uv/fQDtoV1yey1FrQZrQjACGPi1Widsy1TucC7Jg==}
-    engines: {node: '>=8.*'}
-    hasBin: true
-
   p-limit@3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
     engines: {node: '>=10'}
@@ -3527,10 +3466,6 @@ packages:
 
   run-async@3.0.0:
     resolution: {integrity: sha512-540WwVDOMxA6dN6We19EcT9sc3hkXPw5mzRNGM3FkdN/vtE9NFvj5lFAPNwUDmJjXidm3v7TC1cTE7t17Ulm1Q==}
-    engines: {node: '>=0.12.0'}
-
-  run-async@4.0.4:
-    resolution: {integrity: sha512-2cgeRHnV11lSXBEhq7sN7a5UVjTKm9JTb9x8ApIT//16D7QL96AgnNeWSGoB4gIHc0iYw/Ha0Z+waBaCYZVNhg==}
     engines: {node: '>=0.12.0'}
 
   run-parallel@1.2.0:
@@ -4742,30 +4677,6 @@ snapshots:
   '@oxc-project/runtime@0.76.0': {}
 
   '@oxc-project/types@0.76.0': {}
-
-  '@oxlint/darwin-arm64@1.6.0':
-    optional: true
-
-  '@oxlint/darwin-x64@1.6.0':
-    optional: true
-
-  '@oxlint/linux-arm64-gnu@1.6.0':
-    optional: true
-
-  '@oxlint/linux-arm64-musl@1.6.0':
-    optional: true
-
-  '@oxlint/linux-x64-gnu@1.6.0':
-    optional: true
-
-  '@oxlint/linux-x64-musl@1.6.0':
-    optional: true
-
-  '@oxlint/win32-arm64@1.6.0':
-    optional: true
-
-  '@oxlint/win32-x64@1.6.0':
-    optional: true
 
   '@phun-ky/typeof@1.2.8': {}
 
@@ -6609,18 +6520,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.16.3
 
-  inquirer@12.7.0(@types/node@22.16.3):
-    dependencies:
-      '@inquirer/core': 10.1.14(@types/node@22.16.3)
-      '@inquirer/prompts': 7.6.0(@types/node@22.16.3)
-      '@inquirer/type': 3.0.7(@types/node@22.16.3)
-      ansi-escapes: 4.3.2
-      mute-stream: 2.0.0
-      run-async: 4.0.4
-      rxjs: 7.8.2
-    optionalDependencies:
-      '@types/node': 22.16.3
-
   ip-address@9.0.5:
     dependencies:
       jsbn: 1.1.0
@@ -7543,17 +7442,6 @@ snapshots:
 
   os-tmpdir@1.0.2: {}
 
-  oxlint@1.6.0:
-    optionalDependencies:
-      '@oxlint/darwin-arm64': 1.6.0
-      '@oxlint/darwin-x64': 1.6.0
-      '@oxlint/linux-arm64-gnu': 1.6.0
-      '@oxlint/linux-arm64-musl': 1.6.0
-      '@oxlint/linux-x64-gnu': 1.6.0
-      '@oxlint/linux-x64-musl': 1.6.0
-      '@oxlint/win32-arm64': 1.6.0
-      '@oxlint/win32-x64': 1.6.0
-
   p-limit@3.1.0:
     dependencies:
       yocto-queue: 0.1.0
@@ -7953,11 +7841,6 @@ snapshots:
   run-applescript@7.0.0: {}
 
   run-async@3.0.0: {}
-
-  run-async@4.0.4:
-    dependencies:
-      oxlint: 1.6.0
-      prettier: 3.6.2
 
   run-parallel@1.2.0:
     dependencies:

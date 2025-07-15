@@ -13,12 +13,11 @@
     "custom-release": "./release.js"
   },
   "dependencies": {
-    "@inquirer/confirm": "^5.1.13",
+    "@inquirer/checkbox": "^4.1.9",
     "@inquirer/select": "^4.2.4",
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
     "execa": "^9.6.0",
-    "inquirer": "^12.7.0",
     "type-fest": "^4.41.0",
     "yaml": "^2.8.0"
   },
@@ -27,8 +26,8 @@
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/conventional-changelog-config-spec": "^2.1.5",
     "@types/conventional-changelog-core": "^8.0.0",
-    "conventional-changelog": "^7.1.0",
-    "conventional-commits-parser": "^6.0.0",
+    "conventional-changelog": "^7.1.1",
+    "conventional-commits-parser": "^6.2.0",
     "conventional-recommended-bump": "^10.0.0"
   }
 }
