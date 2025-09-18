@@ -178,9 +178,10 @@
           "default": {
             "强制删除": "Remove-Item -Force -Recurse $path",
             "强制删除(git bash)": "(bash)rm -rf $path",
-            "删除所有node_modules": "(bash)find . -type d -name 'node_modules' -exec rm -rf {} +"
+            "删除所有node_modules": "(bash)find . -type d -name 'node_modules' -exec rm -rf {} +",
+            "从指定commit变基": "(bash)git rebase --onto $branch $commit $branch"
           },
-          "markdownDescription": "右击快速执行命令，`$path`会替换为右击的文件(夹)路径,`$file`只对文件生效,`$dir`只对文件夹生效,`$custom`用于自定义参数,`$custom<text>`将会设置默认值,`(bash)`将使用git bash执行命令。"
+          "markdownDescription": "右击快速执行命令\n- `$path`会替换为右击的文件(夹)路径\n- `$file`只对文件生效\n- `$dir`只对文件夹生效,`$custom`用于自定义参数\n- `$custom<text>`将会设置默认值\n- `(bash)`起始的命令将使用git bash执行命令\n- `$branch`会替换为当前分支名称\n- `$branch<text>`如果默认值存在，会自动选择\n- `$commit`会替换为提交的hash"
         },
         "fast-build.quickCommandMaxTerminalsNumber": {
           "type": "number",

@@ -123,6 +123,7 @@ export interface LogOptions {
   /** Max number of log entries to retrieve. If not specified, the default is 32. */
   readonly maxEntries?: number
   readonly path?: string
+  readonly ref?: string
 }
 
 export interface CommitOptions {
@@ -145,6 +146,7 @@ export interface Repository {
   readonly inputBox: InputBox
   readonly state: RepositoryState
   readonly ui: RepositoryUIState
+  readonly #i: any
 
   getConfigs: () => Promise<{ key: string, value: string }[]>
   getConfig: (key: string) => Promise<string>
