@@ -13,13 +13,13 @@
     "custom-release": "./release.js"
   },
   "dependencies": {
-    "@inquirer/checkbox": "^4.1.9",
-    "@inquirer/select": "^4.2.4",
-    "chalk": "^5.4.1",
-    "commander": "^14.0.0",
+    "@inquirer/checkbox": "^4.2.4",
+    "@inquirer/select": "^4.3.4",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
     "execa": "^9.6.0",
-    "type-fest": "^4.41.0",
-    "yaml": "^2.8.0"
+    "type-fest": "^5.0.0",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@conventional-changelog/git-client": "^1.0.0",
