@@ -1,5 +1,20 @@
 # 更新日志
 
+## [0.2.5](https://github.com/2815261401/fastbuild/compare/0.2.4...0.2.5) (2025-09-19)
+
+### ✨ Features | 新功能
+
+* ✨快速命令增强 ，支持按分支或 Commit Hash 进行选择 ([3d35aa2](https://github.com/2815261401/fastbuild/commit/3d35aa2859fa0216c50e626e7def676090c268a0))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛修复 release-it 配置 ([3f622d6](https://github.com/2815261401/fastbuild/commit/3f622d6cdaf6a120e28aaeea151ed99885287f6c))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️升级依赖 ([e2eb9ee](https://github.com/2815261401/fastbuild/commit/e2eb9ee585b19756b4035e71677af845767aa274))
+* 📌锁定 node 版本 ([1b6d258](https://github.com/2815261401/fastbuild/commit/1b6d258bacfe5d1655944ce2732af688736e03a5))
+
 ## [0.2.4](https://github.com/2815261401/fastbuild/compare/0.2.3...0.2.4) (2025-07-15)
 
 ### 🐛 Bug Fixes | Bug 修复
