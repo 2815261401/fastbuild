@@ -18,6 +18,8 @@ const packageJsonPath = path.join(root, 'package.json')
 const { name } = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
 /** 标签名称 */
 const tagName = packageName === name ? `\${version}` : `${packageName}@\${version}`
+/** 相对路径 */
+const relative = path.relative(root, current)
 
 export default assign({
   git: {
@@ -50,11 +52,13 @@ export default assign({
       infile: 'CHANGELOG.md',
       header: '# 更新日志',
       context: { isPatch: true },
-      gitRawCommitsOpts: {
-        path: path.relative(root, current),
-        /** 当前版本 */
-        from: process.env.npm_package_version,
-      },
+      gitRawCommitsOpts: relative
+        ? {
+            path: relative,
+            /** 当前版本 */
+            from: process.env.npm_package_version,
+          }
+        : void 0,
     } as PluginOptions,
   },
 } satisfies Config, {})
