@@ -1,5 +1,16 @@
 # 更新日志
 
+## [0.2.6](https://github.com/2815261401/fastbuild/compare/0.2.5...0.2.6) (2025-09-19)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛修复提交数据获取错误 ([49d8462](https://github.com/2815261401/fastbuild/commit/49d84623791a8e7b5abe987e37c9f3bfdef5e1a3))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️升级 release-it ([b502149](https://github.com/2815261401/fastbuild/commit/b502149973a8ed0db4ddfc2f6607c3ad78ae9232))
+* 📌锁定 vscode 的版本 ([4b9eb53](https://github.com/2815261401/fastbuild/commit/4b9eb5376da04557ab8645db6a6fdf28acbb7a96))
+
 ## [0.2.5](https://github.com/2815261401/fastbuild/compare/0.2.4...0.2.5) (2025-09-19)
 
 ### ✨ Features | 新功能
