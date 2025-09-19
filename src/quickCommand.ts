@@ -1,5 +1,5 @@
 import type { Uri } from 'vscode'
-import type { API, GitExtension, Repository } from '../types/git'
+import type { API, Commit, GitExtension, Repository } from '../types/git'
 
 import { execSync } from 'node:child_process'
 import path, { join, relative } from 'node:path'
@@ -82,8 +82,26 @@ async function getBranchOrCommit(vscodeGit: API, title: string, type: 'branch' |
     logs.appendLine('未找到分支')
     return
   }
+  /** 获取commit日志 */
+  const stdout = execSync(
+    `git log ${branch} --pretty=format:"%H|%s|%P|%ad|%an|%ae|%cd"`,
+    { cwd: repository.rootUri.fsPath, encoding: 'utf-8' },
+  ).toString()
+
   /** 获取提交 */
-  const commits = await repository.log({ maxEntries: 1000, ref: branch })
+  const commits: Commit[] = stdout.split('\n').map((line) => {
+    const [hash, message, parents, authorDate, authorName, authorEmail, commitDate] = line.split('|')
+    return {
+      hash,
+      message,
+      parents: parents ? parents.split(' ') : [],
+      authorDate: authorDate ? new Date(authorDate) : undefined,
+      authorName: authorName || undefined,
+      authorEmail: authorEmail || undefined,
+      commitDate: commitDate ? new Date(commitDate) : undefined,
+    } as Commit
+  })
+
   if (commits.length === 1) {
     return commits.at(0)!.hash
   }
@@ -94,6 +112,7 @@ async function getBranchOrCommit(vscodeGit: API, title: string, type: 'branch' |
         label: v.message,
         value: v.hash,
         description: v.commitDate && dayjs(v.commitDate).format('YYYY-MM-DD HH:mm:ss'),
+        detail: v.hash,
       }
     }), {
       title,
